@@ -5,6 +5,7 @@ angular.module('HeyBusApp')
     $scope.awesomeThings = [
       'HTML5 Boilerplate',
       'AngularJS',
-      'Karma'
+      'Karma',
+      'Twitter Bootstrap'
     ];
   });

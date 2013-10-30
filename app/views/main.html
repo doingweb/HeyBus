@@ -1,9 +1,13 @@
-<div class="hero-unit">
-  <h1>'Allo, 'Allo!</h1>
-  <p>You now have</p>
-  <ul>
-      <li ng-repeat="thing in awesomeThings">{{thing}}</li>
-  </ul>
-  <p>installed.</p>
-  <h3>Enjoy coding! - Yeoman</h3>
+<div class="jumbotron">
+	<h1>Hey Bus</h1>
+	<p>Let's try this as a drop-down.</p>
+	<div class="dropdown">
+		<a href="#" class="dropdown-toggle">Check out the things!</a>
+		<ul class="dropdown-menu" ng-model="selectedThing">
+			<li ng-repeat="thing in awesomeThings">
+				<a ng-click="setSelectedThing(thing)">{{thing}}</a>
+			</li>
+		</ul>
+	</div>
+	<p>The last one selected was "{{selectedThing}}".</p>
 </div>

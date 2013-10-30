@@ -1,13 +1,19 @@
 'use strict';
 
-angular.module('HeyBusApp', [])
-  .config(function ($routeProvider) {
-    $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl'
-      })
-      .otherwise({
-        redirectTo: '/'
-      });
-  });
+angular.module('HeyBusApp', ['ui.bootstrap'])
+	.config(function ($routeProvider, $locationProvider) {
+		$routeProvider
+			.when('/', {
+				controller: 'MainCtrl',
+				templateUrl: 'views/main.html'
+			})
+			.when('/bus/:name', {
+				controller: 'BusCtrl',
+				templateUrl: 'views/bus.html'
+			})
+			.otherwise({
+				redirectTo: '/'
+			});
+		$locationProvider
+			.html5Mode(true);
+	});

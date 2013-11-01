@@ -3,7 +3,13 @@ $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
 
 @import "bootstrap-sass/lib/bootstrap";
 
-/* Put your CSS here */
+html, body, .container {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
 body {
     background: #fafafa;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;

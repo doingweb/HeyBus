@@ -1,16 +1,18 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MainCtrl', function ($scope) {
-		$scope.awesomeThings = [
-			'HTML5 Boilerplate',
-			'AngularJS',
-			'Karma',
-			'Twitter Bootstrap'
-		];
-		$scope.selectedThing = '';
-		$scope.setSelectedThing = function (thing) {
-			console.log('Selected Thing was set to ' + thing);
-			$scope.selectedThing = thing;
+	.controller('MainCtrl', function ($scope, Geolocation) {
+		$scope.markers = [];
+		$scope.zoom = 8;
+		$scope.center = {
+			latitude: 0,
+			longitude: 0
 		};
+		Geolocation.getClientLocation(function (coords) {
+			$scope.center = {
+				latitude: coords.latitude,
+				longitude: coords.longitude
+			};
+			$scope.$apply();
+		});
 	});

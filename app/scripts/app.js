@@ -1,11 +1,15 @@
 'use strict';
 
-angular.module('HeyBusApp', ['ui.bootstrap', 'google-maps'])
+function onGoogleMapsReady () {
+	angular.bootstrap(document.body, ['HeyBusApp']);
+}
+
+angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map'])
 	.config(function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {
-				controller: 'MainCtrl', // TODO: Turn into 'MapCtrl'
-				templateUrl: 'views/main.html'
+				controller: 'MapCtrl',
+				templateUrl: 'views/map.html'
 			})
 			.otherwise({
 				redirectTo: '/'

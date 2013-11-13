@@ -15,7 +15,7 @@
         <link rel="stylesheet" href="styles/style.css">
         <!-- endbuild -->
 </head>
-  <body ng-app="HeyBusApp">
+  <body>
     <!--[if lt IE 9]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
       <script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -36,7 +36,6 @@
   ga('send', 'pageview');
     </script>
  -->
-		<script src="//maps.googleapis.com/maps/api/js?sensor=true"></script>
 		<script src="bower_components/jquery/jquery.js"></script>
 		<script src="bower_components/angular/angular.js"></script>
 		<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
@@ -58,13 +57,16 @@
 
 		<!-- build:js scripts/modules.js -->
 		<script src="bower_components/angular-cookies/angular-cookies.js"></script>
-		<script src="bower_components/angular-google-maps/src/angular-google-maps.js"></script>
+		<script src="bower_components/angular-ui-utils/modules/event/event.js "></script>
+		<script src="bower_components/angular-ui-map/src/map.js"></script>
 		<!-- endbuild -->
 
 		<!-- build:js({.tmp,app}) scripts/scripts.js -->
 		<script src="scripts/app.js"></script>
-		<script src="scripts/controllers/main.js"></script>
-<script src="scripts/services/geolocation.js"></script>
+		<script src="scripts/services/geolocation.js"></script>
+		<script src="scripts/controllers/map.js"></script>
 		<!-- endbuild -->
+
+		<script src="//maps.googleapis.com/maps/api/js?sensor=false&callback=onGoogleMapsReady"></script>
 	</body>
 </html>

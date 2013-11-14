@@ -1,13 +1,15 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.service('Geolocation', function Geolocation ($window) {
-		this.getClientLocation = function (callback) {
+	.service('Geolocation', function Geolocation ($q, $window) {
+		this.getClientLocation = function () {
+			var deferred = $q.defer();
 			$window.navigator.geolocation.getCurrentPosition(function (position) {
-				callback({
+				deferred.resolve({
 					latitude: position.coords.latitude,
 					longitude: position.coords.longitude
-				})
+				});
 			});
+			return deferred.promise;
 		};
 	});

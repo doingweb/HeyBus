@@ -19,12 +19,16 @@ angular.module('HeyBusApp')
 			this.lat = lat;
 			this.long = long;
 		}
-		var gRouteManager = {
-			Add: function (shape) {
-				// TODO
-				console.dir(shape);
-			}
-		};
+
+		var
+			currentInjectedScript,
+			currentDeferredRequest,
+			gRouteManager = {
+				Add: function (shape) {
+					currentDeferredRequest.resolve(shape);
+					currentInjectedScript.remove();
+				}
+			};
 
 		$window.gRouteManager = gRouteManager;
 
@@ -34,32 +38,24 @@ angular.module('HeyBusApp')
 			routeDetailBaseURL = baseURL + 'RouteDetails.axd?Shape=',
 			locationBaseURL = baseURL + 'BusLocator.axd?&ShapeIDs=',
 			getRouteDetails = function (id) {
-				var deferred = $q.defer();
+				currentDeferredRequest = $q.defer();
 
+				currentInjectedScript = $window.document.createElement('script');
+				currentInjectedScript.src = routeDetailBaseURL + id;
+				currentInjectedScript.async = true;
+				$window.document.body.appendChild(currentInjectedScript);
 
-				var apiScript = $window.document.createElement('script');
-				apiScript.src = routeDetailBaseURL + id;
-				apiScript.async = true;
-				$window.document.body.appendChild(apiScript);
-
-				// $http.get(routeDetailBaseURL + id).success(function (data) {
-				// 	deferred.resolve(data);
-				// }).error(function (data) {
-				// 	deferred.reject(data);
-				// });
-
-				return deferred.promise;
+				return currentDeferredRequest.promise;
 			},
 			getBusLocations = function (ids) {
-				var deferred = $q.defer();
+				currentDeferredRequest = $q.defer();
 
-				// $http.get('locationBaseURL' + ids.join(',')).success(function (data) {
-				// 	deferred.resolve(data);
-				// }).error(function (data) {
-				// 	deferred.reject(data);
-				// });
+				currentInjectedScript = $window.document.createElement('script');
+				currentInjectedScript.src = locationBaseURL + ids.join(',');
+				currentInjectedScript.async = true;
+				$window.document.body.appendChild(currentInjectedScript);
 
-				return deferred.promise;
+				return currentDeferredRequest.promise;
 			};
 
 		return {

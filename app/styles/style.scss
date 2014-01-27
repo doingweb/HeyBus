@@ -16,5 +16,20 @@ body {
 	color: #333;
 }
 
+#google-map {
+}
+
 .map-canvas {
+}
+
+.map-controls {
+	position: fixed;
+	right: 0;
+	bottom: 0;
+
+	margin: 5%;
+	padding: 5%;
+
+	background: white;
+	box-shadow: 0 0 5px 0 black;
 }

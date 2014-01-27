@@ -4,8 +4,8 @@ function onGoogleMapsReady () {
 	angular.bootstrap(document.body, ['HeyBusApp']);
 }
 
-angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map'])
-	.config(function ($routeProvider, $locationProvider) {
+angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map', 'ngRoute'])
+	.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {
 				controller: 'MapCtrl',
@@ -16,4 +16,4 @@ angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map'])
 			});
 		$locationProvider
 			.html5Mode(true);
-	});
+	}]);

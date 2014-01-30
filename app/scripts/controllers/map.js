@@ -16,4 +16,10 @@ angular.module('HeyBusApp')
 			console.dir(data);
 			console.groupEnd();
 		});
+
+		TransitData.getBusLocations([2,3,5,6,9]).then(function (data) {
+			console.group('Some bus locations')
+			console.dir(data);
+			console.groupEnd();
+		});
 	}]);

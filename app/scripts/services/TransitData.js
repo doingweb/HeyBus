@@ -2,10 +2,11 @@
 
 angular.module('HeyBusApp')
 	.factory('TransitData', ['$q', '$window', function TransitData ($q, $window) {
-		$window.SmiTransitShape = function (id, names, color, moreNames, unknown1, customerCode, unknown2, stops, routePoints) {
+		$window.SmiTransitShape = function (id, names, color, moreNames, routeShapeId, customerCode, unknown2, stops, routePoints) {
 			this.id = id;
 			this.allNames = names.split('ÿ');
 			this.name = this.allNames[0];
+			this.routeShapeId = routeShapeId;
 			this.stops = stops;
 			this.routePoints = routePoints;
 		};
@@ -21,7 +22,10 @@ angular.module('HeyBusApp')
 		};
 
 		$window.PlotBusLocations = function (busLocations) {
-			requestQueue.resolve('location', busLocations);
+			var returnedParams = busLocations.map(function (element) {
+				return element.id;
+			});
+			requestQueue.resolve('busLocations', returnedParams, busLocations);
 		};
 		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, shapeId, unknown3, busImageUrl, routeName, unknown4, timestampHtml) {
 			this.id = shapeId;
@@ -40,7 +44,7 @@ angular.module('HeyBusApp')
 			requestQueue = (function () {
 				var
 					queue = new Array(),
-					add = function (url) {
+					add = function (type, params, url) {
 						var
 							deferred = $q.defer(),
 							injectedScript = $window.document.createElement('script');
@@ -48,14 +52,24 @@ angular.module('HeyBusApp')
 						injectedScript.async = true;
 						$window.document.body.appendChild(injectedScript);
 						queue.push({
-							// TODO: Something to identify the request later.
+							type: type,
+							params: params,
 							deferred: deferred,
 							script: injectedScript
 						});
 						return deferred.promise;
 					},
-					resolve = function (type, params) {
-						// TODO: Resolve the promise and remove the injected script.
+					resolve = function (type, params, data) {
+						var requestToResolve = queue.filter(function (element) {
+							// TODO: We can't guarantee that we've found the correct deferred request
+							//  when we're looking for an arbitrary array of params that may or may not all come back.
+							//  Redesign this to use a timer to collect bus locations in groups,
+							//  and have that be responsible for resolving each individual request by an individual param.
+							return element.type === type && element.params === params;
+						})[0];
+						requestToResolve.deferred.resolve(data);
+						$window.document.body.removeChild(requestToResolve.script);
+						queue.splice(queue.indexOf(requestToResolve), 1);
 					};
 				return {
 					add: add,
@@ -65,18 +79,18 @@ angular.module('HeyBusApp')
 
 		$window.gRouteManager = {
 			Add: function (shape) {
-				requestQueue.resolve('routeDetails', shape);
+				requestQueue.resolve('routeDetails', shape.routeShapeId, shape);
 			}
 		};
 
 		var
 			getRouteDetails = function (id) {
-				var promise = requestQueue.add(routeDetailBaseURL + id);
+				var promise = requestQueue.add('routeDetails', id, routeDetailBaseURL + id);
 				return promise;
 			},
 			getBusLocations = function (ids) {
 				// TODO: Is this extra comma prefix necessary?
-				var promise = requestQueue.add(locationBaseURL + ',' + ids.join(','));
+				var promise = requestQueue.add('busLocations', ids, locationBaseURL + ',' + ids.join(','));
 				return promise;
 			};
 

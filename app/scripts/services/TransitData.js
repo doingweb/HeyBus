@@ -2,45 +2,12 @@
 
 angular.module('HeyBusApp')
 	.factory('TransitData', ['$q', '$window', function TransitData ($q, $window) {
-		$window.SmiTransitShape = function (id, names, color, moreNames, routeShapeId, customerCode, unknown2, stops, routePoints) {
-			this.id = id;
-			this.allNames = names.split('ÿ');
-			this.name = this.allNames[0];
-			this.routeShapeId = routeShapeId;
-			this.stops = stops;
-			this.routePoints = routePoints;
-		};
-		$window.SmiTransitWaypoint = function (id, name, lat, long, unknown1, unknown2, routeId, customerCode) {
-			this.id = id;
-			this.name = name;
-			this.lat = lat;
-			this.long = long;
-		};
-		$window.SmiTransitShapePoint = function (routeId, name, lat, long, unknown1) {
-			this.lat = lat;
-			this.long = long;
-		};
-
-		$window.PlotBusLocations = function (busLocations) {
-			var returnedParams = busLocations.map(function (element) {
-				return element.id;
-			});
-			requestQueue.resolve('busLocations', returnedParams, busLocations);
-		};
-		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, shapeId, unknown3, busImageUrl, routeName, unknown4, timestampHtml) {
-			this.id = shapeId;
-			this.lat = lat;
-			this.long = long;
-			this.name = routeName;
-			var timestampParts = timestampHtml.match(/(\d{2}:\d{2}:\d{2}) (AM|PM)$/);
-			// TODO this.timestamp = ;
-		};
-
 		var
 			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
 			// baseURL = 'http://localhost:3000/',
 			routeDetailBaseURL = baseURL + 'RouteDetails.axd?Shape=',
-			locationBaseURL = baseURL + 'BusLocator.axd?&ShapeIDs=',
+			locationBaseURL = baseURL + 'BusLocator.axd?ShapeIDs=',
+			arrivalsBaseURL = baseURL + 'RouteArrivals.axd?StopID=',
 			requestQueue = (function () {
 				var
 					queue = new Array(),
@@ -89,10 +56,44 @@ angular.module('HeyBusApp')
 				return promise;
 			},
 			getBusLocations = function (ids) {
-				// TODO: Is this extra comma prefix necessary?
-				var promise = requestQueue.add('busLocations', ids, locationBaseURL + ',' + ids.join(','));
+				var promise = requestQueue.add('busLocations', ids, locationBaseURL + ids.join(','));
 				return promise;
 			};
+
+		$window.SmiTransitShape = function (busId, names, color, moreNames, routeId, customerCode, unknown2, stops, routePoints) {
+			this.id = routeId;
+			this.allNames = names.split('ÿ');
+			this.name = this.allNames[0];
+			this.routeShapeId = routeShapeId;
+			this.stops = stops;
+			this.routePoints = routePoints;
+		};
+		$window.SmiTransitWaypoint = function (stopId, name, lat, long, unknown1, unknown2, busId, customerCode) {
+			this.id = stopId;
+			this.name = name;
+			this.lat = lat;
+			this.long = long;
+		};
+		$window.SmiTransitShapePoint = function (busId, name, lat, long, unknown1) {
+			this.lat = lat;
+			this.long = long;
+		};
+
+		$window.PlotBusLocations = function (busLocations) {
+			var returnedParams = busLocations.map(function (element) {
+				return element.id;
+			});
+			requestQueue.resolve('busLocations', returnedParams, busLocations);
+		};
+		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
+			this.id = busId;
+			this.lat = lat;
+			this.long = long;
+			this.heading = heading;
+			this.name = routeName;
+			var timestampParts = timestampHtml.match(/(\d{2}:\d{2}:\d{2}) (AM|PM)/);
+			// TODO this.timestamp = ;
+		};
 
 		return {
 			getRouteDetails: getRouteDetails,

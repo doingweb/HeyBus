@@ -64,7 +64,7 @@ angular.module('HeyBusApp')
 				};
 			})(),
 			generateUniqueKeyForUrl = function (url) {
-				return url.substring(url.lastIndexOf('/') + 1) + '.' + Math.random().toString().substring(2);
+				return Math.random().toString().substring(2) + url.substring(url.lastIndexOf('/') + 1);
 			},
 			getRouteDetails = function (id) {
 				var apiCall = apiQueue.add('routeDetails', id);

@@ -5,66 +5,87 @@ angular.module('HeyBusApp')
 		var
 			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
 			// baseURL = 'http://localhost:3000/',
-			routeDetailBaseURL = baseURL + 'RouteDetails.axd?Shape=',
-			locationBaseURL = baseURL + 'BusLocator.axd?ShapeIDs=',
-			arrivalsBaseURL = baseURL + 'RouteArrivals.axd?StopID=',
-			requestQueue = (function () {
+			getApiUrl = function (type, param) {
+				switch (type) {
+					case 'routeDetails':
+						return baseURL + 'RouteDetails.axd?Shape=' + param;
+					case 'busLocation':
+						return baseURL + 'BusLocator.axd?ShapeIDs=' + param;
+					case 'arrivals':
+						return baseURL + 'RouteArrivals.axd?StopID=' + param;
+				}
+			},
+			apiQueue = (function () {
 				var
 					queue = new Array(),
-					add = function (type, params, url) {
+					add = function (type, param) {
 						var
-							deferred = $q.defer(),
-							injectedScript = $window.document.createElement('script');
-						injectedScript.src = url;
-						injectedScript.async = true;
-						$window.document.body.appendChild(injectedScript);
-						queue.push({
-							type: type,
-							params: params,
-							deferred: deferred,
-							script: injectedScript
-						});
-						return deferred.promise;
+							apiCall = {
+								type: type,
+								param: param,
+								scriptId: injectedScriptList.add(getApiUrl(type, param)),
+								deferred: $q.defer()
+							};
+						queue.push(apiCall);
+						return apiCall;
 					},
-					resolve = function (type, params, data) {
+					resolve = function (type, param, data) {
 						var requestToResolve = queue.filter(function (element) {
-							// TODO: We can't guarantee that we've found the correct deferred request
-							//  when we're looking for an arbitrary array of params that may or may not all come back.
-							//  Redesign this to use a timer to collect bus locations in groups,
-							//  and have that be responsible for resolving each individual request by an individual param.
-							return element.type === type && element.params === params;
+							return element.type === type && element.param === param;
 						})[0];
 						requestToResolve.deferred.resolve(data);
-						$window.document.body.removeChild(requestToResolve.script);
+						injectedScriptList.remove(requestToResolve.scriptId);
 						queue.splice(queue.indexOf(requestToResolve), 1);
 					};
 				return {
 					add: add,
 					resolve: resolve
 				};
-			})();
+			})(),
+			injectedScriptList = (function () {
+				var
+					queue = {},
+					add = function (url) {
+						var injectedScript = $window.document.createElement('script');
+						injectedScript.src = url;
+						injectedScript.async = true;
+						$window.document.body.appendChild(injectedScript);
+						var key = generateUniqueKeyForUrl(url);
+						queue[key] = injectedScript;
+						return key;
+					},
+					remove = function (key) {
+						$window.document.body.removeChild(queue[key]);
+						delete queue[key];
+					};
+				return {
+					add: add,
+					remove: remove
+				};
+			})(),
+			generateUniqueKeyForUrl = function (url) {
+				return url.substring(url.lastIndexOf('/') + 1) + '.' + Math.random().toString().substring(2);
+			},
+			getRouteDetails = function (id) {
+				var apiCall = apiQueue.add('routeDetails', id);
+				return apiCall.deferred.promise;
+			},
+			getBusLocation = function (id) {
+				var apiCall = apiQueue.add('busLocation', id);
+				return apiCall.deferred.promise;
+			};
 
 		$window.gRouteManager = {
 			Add: function (shape) {
-				requestQueue.resolve('routeDetails', shape.routeShapeId, shape);
+				apiQueue.resolve('routeDetails', shape.id, shape);
 			}
 		};
 
-		var
-			getRouteDetails = function (id) {
-				var promise = requestQueue.add('routeDetails', id, routeDetailBaseURL + id);
-				return promise;
-			},
-			getBusLocations = function (ids) {
-				var promise = requestQueue.add('busLocations', ids, locationBaseURL + ids.join(','));
-				return promise;
-			};
-
 		$window.SmiTransitShape = function (busId, names, color, moreNames, routeId, customerCode, unknown2, stops, routePoints) {
 			this.id = routeId;
+			this.busId = busId;
 			this.allNames = names.split('ÿ');
 			this.name = this.allNames[0];
-			this.routeShapeId = routeShapeId;
 			this.stops = stops;
 			this.routePoints = routePoints;
 		};
@@ -73,6 +94,7 @@ angular.module('HeyBusApp')
 			this.name = name;
 			this.lat = lat;
 			this.long = long;
+			this.busId = busId;
 		};
 		$window.SmiTransitShapePoint = function (busId, name, lat, long, unknown1) {
 			this.lat = lat;
@@ -83,7 +105,7 @@ angular.module('HeyBusApp')
 			var returnedParams = busLocations.map(function (element) {
 				return element.id;
 			});
-			requestQueue.resolve('busLocations', returnedParams, busLocations);
+			apiQueue.resolve('busLocation', returnedParams[0], busLocations);
 		};
 		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
 			this.id = busId;
@@ -97,6 +119,6 @@ angular.module('HeyBusApp')
 
 		return {
 			getRouteDetails: getRouteDetails,
-			getBusLocations: getBusLocations
+			getBusLocation: getBusLocation
 		};
 	}]);

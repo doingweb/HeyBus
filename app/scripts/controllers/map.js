@@ -1,25 +1,75 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MapCtrl', ['$scope', 'Geolocation', 'TransitData', function ($scope, Geolocation, TransitData) {
+	.controller('MapCtrl', ['$scope', 'geolocation', 'TransitData', function ($scope, geolocation, transitData) {
 		$scope.mapOptions = {
 			zoom: 13,
 			mapTypeId: google.maps.MapTypeId.TERRAIN
 		};
 
-		Geolocation.getClientLocation().then(function (coords) {
-			$scope.gmap.setCenter(new google.maps.LatLng(coords.latitude, coords.longitude));
+		geolocation.getLocation().then(function (data) {
+			$scope.gmap.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
 		});
 
-		TransitData.getRouteDetails(5).then(function (data) {
-			console.group('Details for I Route (or whatever route shape 5 is)')
+		transitData.getRouteDetails(5).then(function (data) {
+			console.group('route 5')
 			console.dir(data);
 			console.groupEnd();
 		});
 
-		TransitData.getBusLocations([2,3,5,6,9]).then(function (data) {
-			console.group('Some bus locations')
+		transitData.getRouteDetails(0).then(function (data) {
+			console.group('route 0')
 			console.dir(data);
 			console.groupEnd();
 		});
+
+		transitData.getRouteDetails(3).then(function (data) {
+			console.group('route 3')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getRouteDetails(2).then(function (data) {
+			console.group('route 2')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getBusLocation(9).then(function (data) {
+			console.group('bus 9')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getBusLocation(18).then(function (data) {
+			console.group('bus 18')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getBusLocation(17).then(function (data) {
+			console.group('bus 17')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getBusLocation(3).then(function (data) {
+			console.group('bus 3')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getBusLocation(5).then(function (data) {
+			console.group('bus 5')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		transitData.getBusLocation(6).then(function (data) {
+			console.group('bus 6')
+			console.dir(data);
+			console.groupEnd();
+		});
+
+		// TODO: How do we deal with calls that never resolve?
 	}]);

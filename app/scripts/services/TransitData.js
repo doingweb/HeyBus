@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.factory('TransitData', ['$q', '$window', function TransitData ($q, $window) {
+	.factory('TransitData', ['$q', '$window', '$timeout', function TransitData ($q, $window, $timeout) {
 		var
 			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
 			// baseURL = 'http://localhost:3000/',
@@ -18,14 +18,23 @@ angular.module('HeyBusApp')
 			apiQueue = (function () {
 				var
 					queue = new Array(),
+					remove = function (request) {
+						queue.splice(queue.indexOf(request), 1);
+					},
 					add = function (type, param) {
 						var
 							apiCall = {
 								type: type,
 								param: param,
 								scriptId: injectedScriptList.add(getApiUrl(type, param)),
-								deferred: $q.defer()
+								deferred: $q.defer(),
+								timeout: $timeout(cancelThisApiCall, 10000)
 							};
+						function cancelThisApiCall () {
+							apiCall.deferred.reject('timeout');
+							injectedScriptList.remove(apiCall.scriptId);
+							remove(apiCall);
+						}
 						queue.push(apiCall);
 						return apiCall;
 					},
@@ -33,9 +42,12 @@ angular.module('HeyBusApp')
 						var requestToResolve = queue.filter(function (element) {
 							return element.type === type && element.param === param;
 						})[0];
+						if (!requestToResolve) throw 'Unable to find corresponding API call.';
+
 						requestToResolve.deferred.resolve(data);
+						$timeout.cancel(requestToResolve.timeout);
 						injectedScriptList.remove(requestToResolve.scriptId);
-						queue.splice(queue.indexOf(requestToResolve), 1);
+						remove(requestToResolve);
 					};
 				return {
 					add: add,
@@ -77,7 +89,11 @@ angular.module('HeyBusApp')
 
 		$window.gRouteManager = {
 			Add: function (shape) {
-				apiQueue.resolve('routeDetails', shape.id, shape);
+				try {
+					apiQueue.resolve('routeDetails', shape.id, shape);
+				} catch (ex) {
+					console.warn('Caught an unresolvable route response.');
+				}
 			}
 		};
 
@@ -105,7 +121,12 @@ angular.module('HeyBusApp')
 			var returnedParams = busLocations.map(function (element) {
 				return element.id;
 			});
-			apiQueue.resolve('busLocation', returnedParams[0], busLocations);
+
+			try {
+				apiQueue.resolve('busLocation', returnedParams[0], busLocations);
+			} catch (ex) {
+				console.warn('Caught an unresolvable bus location response.');
+			}
 		};
 		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
 			this.id = busId;

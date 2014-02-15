@@ -5,13 +5,16 @@ angular.module('HeyBusApp')
 		var
 			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
 			// baseURL = 'http://localhost:3000/',
+			routeDetailsApiCall = 'routeDetails',
+			busLocationApiCall = 'busLocation',
+			arrivalsApiCall = 'arrivals',
 			getApiUrl = function (type, param) {
 				switch (type) {
-					case 'routeDetails':
+					case routeDetailsApiCall:
 						return baseURL + 'RouteDetails.axd?Shape=' + param;
-					case 'busLocation':
+					case busLocationApiCall:
 						return baseURL + 'BusLocator.axd?ShapeIDs=' + param;
-					case 'arrivals':
+					case arrivalsApiCall:
 						return baseURL + 'RouteArrivals.axd?StopID=' + param;
 				}
 			},
@@ -79,18 +82,18 @@ angular.module('HeyBusApp')
 				return Math.random().toString().substring(2) + url.substring(url.lastIndexOf('/') + 1);
 			},
 			getRouteDetails = function (id) {
-				var apiCall = apiQueue.add('routeDetails', id);
+				var apiCall = apiQueue.add(routeDetailsApiCall, id);
 				return apiCall.deferred.promise;
 			},
 			getBusLocation = function (id) {
-				var apiCall = apiQueue.add('busLocation', id);
+				var apiCall = apiQueue.add(busLocationApiCall, id);
 				return apiCall.deferred.promise;
 			};
 
 		$window.gRouteManager = {
 			Add: function (shape) {
 				try {
-					apiQueue.resolve('routeDetails', shape.id, shape);
+					apiQueue.resolve(routeDetailsApiCall, shape.id, shape);
 				} catch (ex) {
 					console.warn('Caught an unresolvable route response.');
 				}
@@ -123,7 +126,7 @@ angular.module('HeyBusApp')
 			});
 
 			try {
-				apiQueue.resolve('busLocation', returnedParams[0], busLocations);
+				apiQueue.resolve(busLocationApiCall, returnedParams[0], busLocations);
 			} catch (ex) {
 				console.warn('Caught an unresolvable bus location response.');
 			}

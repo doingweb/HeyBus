@@ -71,5 +71,7 @@ angular.module('HeyBusApp')
 			console.groupEnd();
 		});
 
-		// TODO: How do we deal with calls that never resolve?
+		transitData.getRoutes().then(function (data) {
+			console.dir(data);
+		})
 	}]);

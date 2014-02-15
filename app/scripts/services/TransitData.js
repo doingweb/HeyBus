@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.factory('TransitData', ['$q', '$window', '$timeout', function TransitData ($q, $window, $timeout) {
+	.factory('TransitData', ['$q', '$window', '$timeout', '$http', function TransitData ($q, $window, $timeout, $http) {
 		var
 			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
 			// baseURL = 'http://localhost:3000/',
@@ -81,6 +81,16 @@ angular.module('HeyBusApp')
 			generateUniqueKeyForUrl = function (url) {
 				return Math.random().toString().substring(2) + url.substring(url.lastIndexOf('/') + 1);
 			},
+			getRoutes = function () {
+				var deferred = $q.defer();
+
+				// TODO: I think routes only change for the weekends and breaks. Maybe we can get away with this rather important API call being completely static.
+				$http.get('routes.json').success(function (data) {
+					deferred.resolve(data);
+				});
+
+				return deferred.promise;
+			},
 			getRouteDetails = function (id) {
 				var apiCall = apiQueue.add(routeDetailsApiCall, id);
 				return apiCall.deferred.promise;
@@ -108,6 +118,7 @@ angular.module('HeyBusApp')
 			this.stops = stops;
 			this.routePoints = routePoints;
 		};
+
 		$window.SmiTransitWaypoint = function (stopId, name, lat, long, unknown1, unknown2, busId, customerCode) {
 			this.id = stopId;
 			this.name = name;
@@ -115,6 +126,7 @@ angular.module('HeyBusApp')
 			this.long = long;
 			this.busId = busId;
 		};
+
 		$window.SmiTransitShapePoint = function (busId, name, lat, long, unknown1) {
 			this.lat = lat;
 			this.long = long;
@@ -131,6 +143,7 @@ angular.module('HeyBusApp')
 				console.warn('Caught an unresolvable bus location response.');
 			}
 		};
+
 		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
 			this.id = busId;
 			this.lat = lat;
@@ -142,6 +155,7 @@ angular.module('HeyBusApp')
 		};
 
 		return {
+			getRoutes: getRoutes,
 			getRouteDetails: getRouteDetails,
 			getBusLocation: getBusLocation
 		};

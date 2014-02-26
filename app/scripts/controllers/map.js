@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MapCtrl', ['$scope', 'geolocation', 'TransitData', function ($scope, geolocation, transitData) {
+	.controller('MapCtrl', ['$scope', '$interval', 'geolocation', 'TransitData', function ($scope, $interval, geolocation, transitData) {
 		$scope.mapOptions = {
 			zoom: 13,
 			mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -11,67 +11,23 @@ angular.module('HeyBusApp')
 			$scope.gmap.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
 		});
 
-		transitData.getRouteDetails(5).then(function (data) {
-			console.group('route 5')
-			console.dir(data);
-			console.groupEnd();
+		transitData.getRoutes().then(function (routes) {
+			$scope.routes = routes;
 		});
 
-		transitData.getRouteDetails(0).then(function (data) {
-			console.group('route 0')
-			console.dir(data);
-			console.groupEnd();
-		});
+		$scope.routeSelection = {};
 
-		transitData.getRouteDetails(3).then(function (data) {
-			console.group('route 3')
-			console.dir(data);
-			console.groupEnd();
-		});
+		$interval(updateBusLocations, 5000);
 
-		transitData.getRouteDetails(2).then(function (data) {
-			console.group('route 2')
-			console.dir(data);
-			console.groupEnd();
-		});
+		function updateBusLocations () {
+			angular.forEach($scope.routeSelection, function (selected, routeId) {
+				if (selected)
+					transitData.getBusLocation(routeId).then(plotBus);
+			});
+		}
 
-		transitData.getBusLocation(9).then(function (data) {
-			console.group('bus 9')
-			console.dir(data);
-			console.groupEnd();
-		});
-
-		transitData.getBusLocation(18).then(function (data) {
-			console.group('bus 18')
-			console.dir(data);
-			console.groupEnd();
-		});
-
-		transitData.getBusLocation(17).then(function (data) {
-			console.group('bus 17')
-			console.dir(data);
-			console.groupEnd();
-		});
-
-		transitData.getBusLocation(3).then(function (data) {
-			console.group('bus 3')
-			console.dir(data);
-			console.groupEnd();
-		});
-
-		transitData.getBusLocation(5).then(function (data) {
-			console.group('bus 5')
-			console.dir(data);
-			console.groupEnd();
-		});
-
-		transitData.getBusLocation(6).then(function (data) {
-			console.group('bus 6')
-			console.dir(data);
-			console.groupEnd();
-		});
-
-		transitData.getRoutes().then(function (data) {
-			console.dir(data);
-		})
+		function plotBus(busLocation) {
+			var loc = busLocation[0];
+			console.log('This is where we would be plotting bus on route ' + loc.id + ' at ' + loc.lat + ', ' + loc.long);
+		}
 	}]);

@@ -1,3 +1,4 @@
+
 $iconSpritePath: "../images/glyphicons-halflings.png";
 $iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
 
@@ -23,13 +24,12 @@ body {
 }
 
 .map-controls {
-	position: fixed;
+	position: absolute;
 	right: 0;
 	bottom: 0;
-
-	margin: 5%;
-	padding: 5%;
-
-	background: white;
+	max-height: 50%;
 	box-shadow: 0 0 5px 0 black;
+	overflow-y: auto;
+
+	ul { margin-bottom: 0; }
 }

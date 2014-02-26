@@ -4,7 +4,7 @@ function onGoogleMapsReady () {
 	angular.bootstrap(document.body, ['HeyBusApp']);
 }
 
-angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map', 'ngRoute', 'geolocation'])
+angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map', 'ngRoute', 'ngAnimate', 'geolocation'])
 	.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {

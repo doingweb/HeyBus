@@ -3,8 +3,8 @@
 angular.module('HeyBusApp')
 	.factory('TransitData', ['$q', '$window', '$timeout', '$http', function TransitData ($q, $window, $timeout, $http) {
 		var
-			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
-			// baseURL = 'http://localhost:3000/',
+			// baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
+			baseURL = 'http://localhost:3000/',
 			routeDetailsApiCall = 'routeDetails',
 			busLocationApiCall = 'busLocation',
 			arrivalsApiCall = 'arrivals',
@@ -43,7 +43,7 @@ angular.module('HeyBusApp')
 					},
 					resolve = function (type, param, data) {
 						var requestToResolve = queue.filter(function (element) {
-							return element.type === type && element.param === param;
+							return element.type === type && element.param == param;
 						})[0];
 						if (!requestToResolve) throw 'Unable to find corresponding API call.';
 

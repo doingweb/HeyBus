@@ -3,8 +3,8 @@
 angular.module('HeyBusApp')
 	.factory('TransitData', ['$q', '$window', '$timeout', '$http', function TransitData ($q, $window, $timeout, $http) {
 		var
-			// baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
-			baseURL = 'http://localhost:3000/',
+			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
+			// baseURL = 'http://localhost:3000/',
 			routeDetailsApiCall = 'routeDetails',
 			busLocationApiCall = 'busLocation',
 			arrivalsApiCall = 'arrivals',

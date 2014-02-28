@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MapCtrl', ['$scope', '$interval', 'geolocation', 'TransitData', function ($scope, $interval, geolocation, transitData) {
+	.controller('MapCtrl', ['$scope', '$interval', '$q', 'geolocation', 'TransitData', function ($scope, $interval, $q, geolocation, transitData) {
 		$scope.mapOptions = {
 			zoom: 13,
 			mapTypeId: google.maps.MapTypeId.TERRAIN
@@ -15,19 +15,45 @@ angular.module('HeyBusApp')
 			$scope.routes = routes;
 		});
 
-		$scope.routeSelection = {};
+		$scope.displayRoute = {};
 
 		$interval(updateBusLocations, 5000);
 
 		function updateBusLocations () {
-			angular.forEach($scope.routeSelection, function (selected, routeId) {
-				if (selected)
-					transitData.getBusLocation(routeId).then(plotBus);
+			angular.forEach($scope.displayRoute, function (selected, routeId) {
+				var busId;
+				if (selected) {
+					getRouteInfo(routeId)
+						.then(updateBusMarker);
+				}
 			});
 		}
 
-		function plotBus(busLocation) {
-			var loc = busLocation[0];
-			console.log('This is where we would be plotting bus on route ' + loc.id + ' at ' + loc.lat + ', ' + loc.long);
+		var routeInfo = {};
+
+		function getRouteInfo (routeId) {
+			var deferred = $q.defer();
+
+			if (routeInfo[routeId]) {
+				deferred.resolve(routeInfo[routeId]);
+			} else {
+				transitData.getRouteDetails(routeId).then(function (routeDetails) {
+					routeInfo[routeId] = { details: routeDetails }; // TODO: Add a map marker, too, but make it inactive or hidden or something.
+					deferred.resolve(routeInfo[routeId]);
+				}, function () {
+					deferred.reject('cannot get route info');
+				});
+			}
+
+			return deferred.promise;
+		}
+
+		function updateBusMarker(routeInfo) {
+			transitData.getBusLocation(routeInfo.details.busId).then(function (busLocation) {
+				var loc = busLocation[0];
+				routeInfo.lastLocation = loc;
+				console.log('This is where we would be plotting ' + loc.name + ' at ' + loc.lat + ', ' + loc.long);
+				console.dir(routeInfo);
+			});
 		}
 	}]);

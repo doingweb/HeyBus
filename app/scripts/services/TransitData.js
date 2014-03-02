@@ -84,8 +84,9 @@ angular.module('HeyBusApp')
 			getRoutes = function () {
 				var deferred = $q.defer();
 
-				// TODO: I think routes only change for the weekends and breaks. Maybe we can get away with this rather important API call being completely static.
-				$http.get('routes.json').success(function (data) {
+				var dayOfTheWeek = new Date().getDay();
+				var routesUrl = 'bus-routes/' + (dayOfTheWeek == 0 || dayOfTheWeek == 6 ? 'weekend.json' : 'weekday.json');
+				$http.get(routesUrl).success(function (data) {
 					deferred.resolve(data);
 				});
 
@@ -150,8 +151,17 @@ angular.module('HeyBusApp')
 			this.long = long;
 			this.heading = heading;
 			this.name = routeName;
-			var timestampParts = timestampHtml.match(/(\d{2}:\d{2}:\d{2}) (AM|PM)/);
-			// TODO this.timestamp = ;
+			var timestampParts = timestampHtml.match(/(\d{1,2}):(\d{2}):(\d{2}) (AM|PM)/);
+			if (timestampParts) {
+				var time = new Date();
+				var hour = timestampParts[1];
+				time.setHours(timestampParts[4] == 'PM' ? parseInt(hour, 10) + 12 : hour);
+				time.setMinutes(timestampParts[2]);
+				time.setSeconds(timestampParts[3]);
+				this.timestamp = time;
+			} else {
+				console.error('Unable to parse timestamp: ' + timestampHtml);
+			}
 		};
 
 		return {

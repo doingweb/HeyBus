@@ -15,7 +15,7 @@ angular.module('HeyBusApp')
 			$scope.routes = routes;
 		});
 
-		$scope.displayRoute = {};
+		$scope.displayRoute = {}; // TODO: This might be a good thing to save to localStorage.
 
 		$interval(updateBusLocations, 5000);
 
@@ -38,7 +38,13 @@ angular.module('HeyBusApp')
 				deferred.resolve(routeInfo[routeId]);
 			} else {
 				transitData.getRouteDetails(routeId).then(function (routeDetails) {
-					routeInfo[routeId] = { details: routeDetails }; // TODO: Add a map marker, too, but make it inactive or hidden or something.
+					routeInfo[routeId] = {
+						details: routeDetails,
+						busMarker: new google.maps.Marker({
+							position: new google.maps.LatLng(0, 0),
+							title: routeDetails.name
+						})
+					};
 					deferred.resolve(routeInfo[routeId]);
 				}, function () {
 					deferred.reject('cannot get route info');
@@ -52,8 +58,10 @@ angular.module('HeyBusApp')
 			transitData.getBusLocation(routeInfo.details.busId).then(function (busLocation) {
 				var loc = busLocation[0];
 				routeInfo.lastLocation = loc;
-				console.log('This is where we would be plotting ' + loc.name + ' at ' + loc.lat + ', ' + loc.long);
-				console.dir(routeInfo);
+				routeInfo.busMarker.setPosition(new google.maps.LatLng(loc.lat, loc.long));
+				if (!routeInfo.busMarker.map)
+					routeInfo.busMarker.setMap($scope.gmap);
+				console.log('Bus ' + loc.name + ' was at ' + loc.lat + ', ' + loc.long + ' at ' + loc.timestamp);
 			});
 		}
 	}]);

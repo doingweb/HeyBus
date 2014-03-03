@@ -16,13 +16,28 @@ angular.module('HeyBusApp')
 		$scope.routesToDisplay = {}; // TODO: This might be a good thing to save to localStorage.
 		var routes = {};
 
-		$interval(updateSelectedRoutes, 5000);
+		$scope.$watchCollection('routesToDisplay', updateRouteVisibility);
+
+		$interval(updateSelectedRouteBusLocations, 5000);
 
 		function setMapCenterToLocation (location) {
 			$scope.gmap.setCenter(new google.maps.LatLng(location.coords.latitude, location.coords.longitude));
 		}
 
-		function updateSelectedRoutes () {
+		function updateRouteVisibility (routesToDisplay) {
+			angular.forEach(routesToDisplay, function (routeIsSelected, routeId) {
+				var route = routes[routeId];
+				if (route) {
+					if (routeIsSelected) {
+						route.showMarkers();
+					} else {
+						route.hideMarkers();
+					}
+				}
+			});
+		}
+
+		function updateSelectedRouteBusLocations () {
 			angular.forEach($scope.routesToDisplay, function (routeIsSelected, routeId) {
 				if (routeIsSelected) {
 					var route = routes[routeId];
@@ -48,24 +63,46 @@ angular.module('HeyBusApp')
 		function Route (routeDetails) {
 			var self = this;
 			self.details = routeDetails;
-			self.busMarkers = {};
+			self.markers = {
+				buses: {},
+				stops: {},
+				path: {}
+			};
 			self.updateBusLocations = function (busLocations) {
 				self.lastBusLocations = busLocations;
-				busLocations.forEach(updateBusMarker);
+				busLocations.forEach(updateBusMarkers);
 			};
+			self.showMarkers = showMarkers;
+			self.hideMarkers = hideMarkers;
 
-			function updateBusMarker (busLocation) {
-				console.log(busLocation.name + ' route bus \'' + busLocation.id + '\' was at ' + busLocation.lat + ', ' + busLocation.long + ' at ' + busLocation.timestamp);
+			function updateBusMarkers (busLocation) {
+				// console.log(busLocation.name + ' route bus \'' + busLocation.id + '\' was at ' + busLocation.lat + ', ' + busLocation.long + ' at ' + busLocation.timestamp);
 				var gmapLatLng = new google.maps.LatLng(busLocation.lat, busLocation.long);
-				if (self.busMarkers[busLocation.id]) {
-					self.busMarkers[busLocation.id].setPosition(gmapLatLng);
+				if (self.markers.buses[busLocation.id]) {
+					self.markers.buses[busLocation.id].setPosition(gmapLatLng);
 				} else {
-					self.busMarkers[busLocation.id] = new google.maps.Marker({
+					self.markers.buses[busLocation.id] = new google.maps.Marker({
 						position: gmapLatLng,
 						map: $scope.gmap,
 						title: self.details.name + ' (' + busLocation.id + ')'
 					});
 				}
+			}
+
+			function showMarkers () {
+				setVisibleForAllMarkers(true);
+			}
+
+			function hideMarkers () {
+				setVisibleForAllMarkers(false);
+			}
+
+			function setVisibleForAllMarkers (visible) {
+				angular.forEach(self.markers, function (markerGroup) {
+					angular.forEach(markerGroup, function (marker) {
+						marker.setVisible(visible);
+					});
+				});
 			}
 		}
 	}]);

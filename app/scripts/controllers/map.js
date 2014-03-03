@@ -7,61 +7,65 @@ angular.module('HeyBusApp')
 			mapTypeId: google.maps.MapTypeId.TERRAIN
 		};
 
-		geolocation.getLocation().then(function (data) {
-			$scope.gmap.setCenter(new google.maps.LatLng(data.coords.latitude, data.coords.longitude));
-		});
+		geolocation.getLocation().then(setMapCenterToLocation);
 
 		transitData.getRoutes().then(function (routes) {
-			$scope.routes = routes;
+			$scope.routeOptions = routes;
 		});
 
-		$scope.displayRoute = {}; // TODO: This might be a good thing to save to localStorage.
+		$scope.routesToDisplay = {}; // TODO: This might be a good thing to save to localStorage.
+		var routes = {};
 
-		$interval(updateBusLocations, 5000);
+		$interval(updateSelectedRoutes, 5000);
 
-		function updateBusLocations () {
-			angular.forEach($scope.displayRoute, function (selected, routeId) {
-				var busId;
-				if (selected) {
-					getRouteInfo(routeId)
-						.then(updateBusMarker);
+		function setMapCenterToLocation (location) {
+			$scope.gmap.setCenter(new google.maps.LatLng(location.coords.latitude, location.coords.longitude));
+		}
+
+		function updateSelectedRoutes () {
+			angular.forEach($scope.routesToDisplay, function (routeIsSelected, routeId) {
+				if (routeIsSelected) {
+					var route = routes[routeId];
+					if (route) {
+						updateRouteBusLocations(route);
+					} else {
+						transitData.getRouteDetails(routeId).then(addRoute).then(updateRouteBusLocations);
+					}
 				}
 			});
-		}
 
-		var routeInfo = {};
-
-		function getRouteInfo (routeId) {
-			var deferred = $q.defer();
-
-			if (routeInfo[routeId]) {
-				deferred.resolve(routeInfo[routeId]);
-			} else {
-				transitData.getRouteDetails(routeId).then(function (routeDetails) {
-					routeInfo[routeId] = {
-						details: routeDetails,
-						busMarker: new google.maps.Marker({
-							position: new google.maps.LatLng(0, 0),
-							title: routeDetails.name
-						})
-					};
-					deferred.resolve(routeInfo[routeId]);
-				}, function () {
-					deferred.reject('cannot get route info');
-				});
+			function addRoute (routeDetails) {
+				var route = new Route(routeDetails);
+				routes[routeDetails.id] = route;
+				return route;
 			}
 
-			return deferred.promise;
+			function updateRouteBusLocations (route) {
+				transitData.getBusLocations(route.details.busId).then(route.updateBusLocations);
+			}
 		}
 
-		function updateBusMarker(routeInfo) {
-			transitData.getBusLocation(routeInfo.details.busId).then(function (busLocation) {
-				var loc = busLocation[0];
-				routeInfo.lastLocation = loc;
-				routeInfo.busMarker.setPosition(new google.maps.LatLng(loc.lat, loc.long));
-				if (!routeInfo.busMarker.map)
-					routeInfo.busMarker.setMap($scope.gmap);
-				console.log('Bus ' + loc.name + ' was at ' + loc.lat + ', ' + loc.long + ' at ' + loc.timestamp);
-			});
+		function Route (routeDetails) {
+			var self = this;
+			self.details = routeDetails;
+			self.busMarkers = {};
+			self.updateBusLocations = function (busLocations) {
+				self.lastBusLocations = busLocations;
+				busLocations.forEach(updateBusMarker);
+			};
+
+			function updateBusMarker (busLocation) {
+				console.log(busLocation.name + ' route bus \'' + busLocation.id + '\' was at ' + busLocation.lat + ', ' + busLocation.long + ' at ' + busLocation.timestamp);
+				var gmapLatLng = new google.maps.LatLng(busLocation.lat, busLocation.long);
+				if (self.busMarkers[busLocation.id]) {
+					self.busMarkers[busLocation.id].setPosition(gmapLatLng);
+				} else {
+					self.busMarkers[busLocation.id] = new google.maps.Marker({
+						position: gmapLatLng,
+						map: $scope.gmap,
+						title: self.details.name + ' (' + busLocation.id + ')'
+					});
+				}
+			}
 		}
 	}]);

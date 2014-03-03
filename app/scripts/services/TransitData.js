@@ -85,10 +85,14 @@ angular.module('HeyBusApp')
 				var deferred = $q.defer();
 
 				var dayOfTheWeek = new Date().getDay();
-				var routesUrl = 'bus-routes/' + (dayOfTheWeek == 0 || dayOfTheWeek == 6 ? 'weekend.json' : 'weekday.json');
-				$http.get(routesUrl).success(function (data) {
-					deferred.resolve(data);
-				});
+				if (dayOfTheWeek === 0) {
+					deferred.resolve(null);
+				} else {
+					var routesUrl = 'bus-routes/' + (dayOfTheWeek === 6 ? 'saturday.json' : 'weekday.json');
+					$http.get(routesUrl).success(function (data) {
+						deferred.resolve(data);
+					});
+				}
 
 				return deferred.promise;
 			},
@@ -96,7 +100,7 @@ angular.module('HeyBusApp')
 				var apiCall = apiQueue.add(routeDetailsApiCall, id);
 				return apiCall.deferred.promise;
 			},
-			getBusLocation = function (id) {
+			getBusLocations = function (id) {
 				var apiCall = apiQueue.add(busLocationApiCall, id);
 				return apiCall.deferred.promise;
 			};
@@ -128,14 +132,14 @@ angular.module('HeyBusApp')
 			this.busId = busId;
 		};
 
-		$window.SmiTransitShapePoint = function (busId, name, lat, long, unknown1) {
+		$window.SmiTransitShapePoint = function (busId, name, lat, long, routeId) {
 			this.lat = lat;
 			this.long = long;
 		};
 
 		$window.PlotBusLocations = function (busLocations) {
 			var returnedParams = busLocations.map(function (element) {
-				return element.id;
+				return element.busId;
 			});
 
 			try {
@@ -145,8 +149,9 @@ angular.module('HeyBusApp')
 			}
 		};
 
-		$window.SmiTransitVehicleLocation = function (unknown1, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
-			this.id = busId;
+		$window.SmiTransitVehicleLocation = function (physicalBusId, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
+			this.id = physicalBusId;
+			this.busId = busId;
 			this.lat = lat;
 			this.long = long;
 			this.heading = heading;
@@ -167,6 +172,6 @@ angular.module('HeyBusApp')
 		return {
 			getRoutes: getRoutes,
 			getRouteDetails: getRouteDetails,
-			getBusLocation: getBusLocation
+			getBusLocations: getBusLocations
 		};
 	}]);

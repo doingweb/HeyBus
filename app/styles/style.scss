@@ -1,0 +1,35 @@
+
+$iconSpritePath: "../images/glyphicons-halflings.png";
+$iconWhiteSpritePath: "../images/glyphicons-halflings-white.png";
+
+@import "bootstrap-sass/lib/bootstrap";
+
+html, body, .container, #google-map, .map-canvas {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	padding: 0;
+}
+
+body {
+	background: #fafafa;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	color: #333;
+}
+
+#google-map {
+}
+
+.map-canvas {
+}
+
+.map-controls {
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	max-height: 50%;
+	box-shadow: 0 0 5px 0 black;
+	overflow-y: auto;
+
+	ul { margin-bottom: 0; }
+}

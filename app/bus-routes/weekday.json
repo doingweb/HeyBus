@@ -1,0 +1,102 @@
+{
+	"0": {
+		"shortName": "A Outbound",
+		"longName": "A Outbound"
+	},
+	"1": {
+		"shortName": "E Outbound",
+		"longName": "E Outbound"
+	},
+	"2": {
+		"shortName": "Express 1 Outbound",
+		"longName": "Express 1 Outbound"
+	},
+	"3": {
+		"shortName": "Express 2 Outbound",
+		"longName": "Express 2 Outbound"
+	},
+	"4": {
+		"shortName": "Express 2 Alt Outbound",
+		"longName": "Express 2 Alt Outbound"
+	},
+	"5": {
+		"shortName": "I Outbound",
+		"longName": "I Outbound"
+	},
+	"6": {
+		"shortName": "J Outbound",
+		"longName": "J Outbound"
+	},
+	"7": {
+		"shortName": "Last North Outbound",
+		"longName": "Last North Outbound"
+	},
+	"8": {
+		"shortName": "Last South Outbound",
+		"longName": "Last South Outbound"
+	},
+	"9": {
+		"shortName": "Loop Route Outbound",
+		"longName": "Loop Route Outbound"
+	},
+	"10": {
+		"shortName": "North Outbound",
+		"longName": "North Outbound"
+	},
+	"11": {
+		"shortName": "Shuttles Outbound",
+		"longName": "Shuttles Outbound"
+	},
+	"12": {
+		"shortName": "South Outbound",
+		"longName": "South Outbound"
+	},
+	"13": {
+		"shortName": "TAM1 Outbound",
+		"longName": "TAM 1 Outbound"
+	},
+	"14": {
+		"shortName": "TAM2 Outbound",
+		"longName": "TAM 2 Outbound"
+	},
+	"15": {
+		"shortName": "TAM3 Outbound",
+		"longName": "TAM 3 Outbound"
+	},
+	"16": {
+		"shortName": "TAM4 Outbound",
+		"longName": "TAM 4 Outbound"
+	},
+	"17": {
+		"shortName": "TAM5 Outbound",
+		"longName": "TAM 5 Outbound"
+	},
+	"18": {
+		"shortName": "TLMS2 Outbound",
+		"longName": "Tripper Lincoln Middle School 2 Outbound"
+	},
+	"19": {
+		"shortName": "TLMS3 Outbound",
+		"longName": "Tripper Lincoln Middle School 3 Outbound"
+	},
+	"20": {
+		"shortName": "TLMS4 Outbound",
+		"longName": "Tripper Lincoln Middle School 4 Outbound"
+	},
+	"21": {
+		"shortName": "TLMS5 Outbound",
+		"longName": "Tripper Lincoln Middle School 5 Outbound"
+	},
+	"22": {
+		"shortName": "TLMSL Outbound",
+		"longName": "Tripper Lincoln Middle School Late Outbound"
+	},
+	"23": {
+		"shortName": "TPHS1 Outbound",
+		"longName": "Tripper Pullman High School 1 Outbound"
+	},
+	"24": {
+		"shortName": "TPHS2 Outbound",
+		"longName": "Tripper Pullman High School 2 Outbound"
+	}
+}

@@ -2,7 +2,7 @@
   "name": "HeyBus",
   "version": "0.0.0",
   "dependencies": {
-    "angular": "~1",
+    "angular": "~1.2",
     "json3": "~3.2.4",
     "jquery": "~1.9.1",
     "bootstrap-sass": "~3",

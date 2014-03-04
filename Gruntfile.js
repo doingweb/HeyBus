@@ -1,4 +1,3 @@
-// Generated on 2013-10-23 using generator-angular 0.4.0
 'use strict';
 var LIVERELOAD_PORT = 35729;
 var lrSnippet = require('connect-livereload')({ port: LIVERELOAD_PORT });
@@ -27,6 +26,8 @@ module.exports = function (grunt) {
 	} catch (e) {}
 
 	grunt.initConfig({
+		pkg: grunt.file.readJSON('package.json'),
+		credentials: grunt.file.readJSON('credentials.json'),
 		yeoman: yeomanConfig,
 		watch: {
 			coffee: {
@@ -274,7 +275,8 @@ module.exports = function (grunt) {
 						'.htaccess',
 						'bower_components/**/*',
 						'images/{,*/}*.{gif,webp}',
-						'styles/fonts/*'
+						'styles/fonts/*',
+						'bus-routes/*'
 					]
 				}, {
 					expand: true,
@@ -333,13 +335,92 @@ module.exports = function (grunt) {
 				}]
 			}
 		},
-		uglify: {
-			dist: {
-				files: {
-					'<%= yeoman.dist %>/scripts/scripts.js': [
-						'<%= yeoman.dist %>/scripts/scripts.js'
+		replace: {
+			analytics: {
+				options: {
+					patterns: [
+						{
+							match: 'googleAnalyticsTrackingID',
+							replacement: '<%= credentials.google.analytics.id %>'
+						},
+						{
+							match: 'googleAnalyticsAppName',
+							replacement: '<%= credentials.google.analytics.app %>'
+						}
 					]
-				}
+				},
+				files: [
+					{
+						src: ['dist/index.html'],
+						dest: './'
+					}
+				]
+			},
+			version: {
+				options: {
+					patterns: [
+						{
+							match: 'heybusVersion',
+							replacement: '<%= pkg.version %>'
+						}
+					]
+				},
+				files: [
+					{
+						src: ['dist/index.html'],
+						dest: './'
+					}
+				]
+			},
+			deploymentTimestamp: {
+				options: {
+					patterns: [
+						{
+							match: 'deploymentTimestamp',
+							replacement: '<%= grunt.template.today("dddd, mm/dd/yyyy, h:MM:ss TT") %>'
+						}
+					]
+				},
+				files: [
+					{
+						src: ['dist/index.html'],
+						dest: './'
+					}
+				]
+			},
+			baseElement: {
+				options: {
+					patterns: [
+						{
+							match: /<!-- \(base goes here in production\) -->/,
+							replacement: '<base href="/heybus/">'
+						}
+					]
+				},
+				files: [
+					{
+						src: ['dist/index.html'],
+						dest: './'
+					}
+				]
+			}
+		},
+		s3: {
+			options: {
+				bucket: '<%= credentials.aws.bucket %>',
+				key: '<%= credentials.aws.key %>',
+				secret: '<%= credentials.aws.secret %>',
+				region: '<%= credentials.aws.region %>',
+				gzip: true,
+				access: 'public-read'
+			},
+			production: {
+				upload: grunt.file.expand({ cwd: 'dist', filter: 'isFile' }, '**').map(function (file) {
+					return {
+						src: 'dist/' + file,
+						dest: 'heybus/' + file
+					}
+				})
 			}
 		}
 	});
@@ -379,7 +460,16 @@ module.exports = function (grunt) {
 		'cssmin',
 		'uglify',
 		'rev',
-		'usemin'
+		'usemin',
+		'replace:analytics',
+		'replace:version'
+	]);
+
+	grunt.registerTask('deploy', [
+		'build',
+		'replace:deploymentTimestamp',
+		'replace:baseElement',
+		's3:production'
 	]);
 
 	grunt.registerTask('default', [

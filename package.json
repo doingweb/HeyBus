@@ -1,6 +1,6 @@
 {
   "name": "heybus",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "dependencies": {},
   "devDependencies": {
     "grunt": "~0.4.1",
@@ -24,7 +24,7 @@
     "grunt-concurrent": "~0.3.0",
     "load-grunt-tasks": "~0.1.0",
     "connect-livereload": "~0.2.0",
-    "grunt-google-cdn": "~0.2",
+    "grunt-google-cdn": "~0.4",
     "grunt-ngmin": "~0.0.2",
     "time-grunt": "~0.1.0",
     "karma-ng-scenario": "~0.1.0",

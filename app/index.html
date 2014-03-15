@@ -16,7 +16,7 @@
 				<link rel="stylesheet" href="styles/style.css">
 				<!-- endbuild -->
 </head>
-	<body>
+	<body ng-app="HeyBusApp">
 		<!--[if lt IE 9]>
 			<p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
 			<script src="bower_components/es5-shim/es5-shim.js"></script>
@@ -32,6 +32,8 @@
 			ga('send', 'pageview');
 		</script>
 
+		<script src="//maps.googleapis.com/maps/api/js?sensor=true"></script>
+
 		<script src="bower_components/jquery/dist/jquery.js"></script>
 		<script src="bower_components/angular/angular.js"></script>
 		<script src="bower_components/angular-animate/angular-animate.js"></script>
@@ -42,8 +44,9 @@
 		<script src="bower_components/angular-bootstrap/ui-bootstrap.js"></script>
 		<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 		<script src="bower_components/angular-ui-utils/ui-utils.js "></script>
-		<script src="bower_components/angular-ui-map/ui-map.js"></script>
 		<script src="bower_components/angularjs-geolocation/src/geolocation.js"></script>
+		<script src="bower_components/underscore/underscore.js"></script>
+		<script src="bower_components/angular-google-maps/dist/angular-google-maps.js"></script>
 		<!-- endbuild -->
 
 		<!-- build:js({.tmp,app}) scripts/app.js -->
@@ -51,8 +54,6 @@
 		<script src="scripts/services/transitData.js"></script>
 		<script src="scripts/controllers/map.js"></script>
 		<!-- endbuild -->
-
-		<script src="//maps.googleapis.com/maps/api/js?sensor=true&callback=onGoogleMapsReady"></script>
 
 		<!-- HeyBus version @@heybusVersion. Last deployed @@deploymentTimestamp. -->
 	</body>

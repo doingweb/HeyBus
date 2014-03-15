@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.factory('TransitData', ['$q', '$window', '$timeout', '$http', function TransitData ($q, $window, $timeout, $http) {
+	.factory('transitData', function transitData ($q, $window, $timeout, $http) {
 		var
 			baseURL = 'http://pullman.mapstrat.com/nextvehicle/',
 			// baseURL = 'http://localhost:3000/',
@@ -174,4 +174,4 @@ angular.module('HeyBusApp')
 			getRouteDetails: getRouteDetails,
 			getBusLocations: getBusLocations
 		};
-	}]);
+	});

@@ -1,5 +1,9 @@
 <section id="google-map">
-	<div ui-map="gmap" ui-options="mapOptions" class="map-canvas"></div>
+
+	<google-map center="map.center" zoom="map.zoom">
+
+	</google-map>
+
 	<div class="map-controls" accordion>
 		<accordion-group heading="Routes">
 			<ul class="list-unstyled" ng-if="routeOptions">

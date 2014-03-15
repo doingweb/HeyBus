@@ -1,10 +1,13 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MapCtrl', ['$scope', '$interval', '$q', 'geolocation', 'TransitData', function ($scope, $interval, $q, geolocation, transitData) {
-		$scope.mapOptions = {
-			zoom: 13,
-			mapTypeId: google.maps.MapTypeId.TERRAIN
+	.controller('MapCtrl', function ($scope, $interval, $q, geolocation, transitData) {
+		$scope.map = {
+			center: {
+				latitude: 0,
+				longitude: 0
+			},
+			zoom: 13
 		};
 
 		geolocation.getLocation().then(setMapCenterToLocation);
@@ -21,7 +24,10 @@ angular.module('HeyBusApp')
 		$interval(updateSelectedRouteBusLocations, 5000);
 
 		function setMapCenterToLocation (location) {
-			$scope.gmap.setCenter(new google.maps.LatLng(location.coords.latitude, location.coords.longitude));
+			$scope.map.center = {
+				latitude: location.coords.latitude,
+				longitude: location.coords.longitude
+			};
 		}
 
 		function updateRouteVisibility (routesToDisplay) {
@@ -105,4 +111,4 @@ angular.module('HeyBusApp')
 				});
 			}
 		}
-	}]);
+	});

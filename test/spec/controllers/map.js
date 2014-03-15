@@ -1,25 +1,60 @@
 'use strict';
 
 describe('Controller: MapCtrl', function () {
+	var MapCtrl,
+		scope,
+		geolocation,
+		transitData;
 
-	// load the controller's module
 	beforeEach(module('HeyBusApp'));
 
 	beforeEach(module('ui.bootstrap'));
-	beforeEach(module('ui.map'));
+	beforeEach(module('google-maps'));
+	beforeEach(module('geolocation'));
 
-	var MapCtrl,
-		scope;
+	beforeEach(inject(function ($controller, $rootScope, _geolocation_, _transitData_) {
+		geolocation = _geolocation_;
+		sinon.spy(geolocation, 'getLocation');
 
-	// Initialize the controller and a mock scope
-	beforeEach(inject(function ($controller, $rootScope) {
+		transitData = _transitData_;
+		sinon.spy(transitData, 'getRoutes');
+
 		scope = $rootScope.$new();
 		MapCtrl = $controller('MapCtrl', {
 			$scope: scope
 		});
 	}));
 
-	it('should set mapOptions', function () {
-		expect(scope.mapOptions).toBeDefined();
+	it('should set the map center', function () {
+		expect(scope.map.center.latitude).to.exist;
+		expect(scope.map.center.longitude).to.exist;
+	});
+
+	it('should set the zoom level to 13', function () {
+		expect(scope.map.zoom).to.equal(13);
+	});
+
+	it('should set the map center to the user\'s current location', function (done) {
+		expect(geolocation.getLocation.called).to.be.true;
+		geolocation.getLocationPromise().then(function (location) {
+			expect(scope.map.center.latitude).to.equal(location.coords.latitude);
+			expect(scope.map.center.longitude).to.equal(location.coords.longitude);
+			done();
+		});
+		scope.$apply();
+	});
+
+	it('should set up the route options', function (done) {
+		expect(transitData.getRoutes.called).to.be.true;
+		transitData.promises.getRoutes.then(function (routes) {
+			expect(scope.routeOptions).to.equal(routes);
+			done();
+		});
+		scope.$apply();
+	});
+
+	it('should initialize an empty object for selected routes', function () {
+		expect(scope.routesToDisplay).to.be.instanceOf(Object);
+		expect(scope.routesToDisplay).to.be.empty;
 	});
 });

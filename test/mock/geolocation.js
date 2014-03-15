@@ -1,16 +1,15 @@
 'use strict';
 
 angular.module('geolocation', [])
-	.value('currentLocationCoords', {
-		latitude: 11,
-		longitude: 12
-	})
-	.factory('geolocation', function ($q, currentLocationCoords) {
+	.factory('geolocation', function ($q) {
 		var getLocationPromise;
 
 		function getLocation () {
 			getLocationPromise = $q.when({
-				coords: currentLocationCoords
+				coords: {
+					latitude: 11,
+					longitude: 12
+				}
 			});
 
 			return getLocationPromise;

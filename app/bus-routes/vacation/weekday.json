@@ -1,0 +1,66 @@
+{
+	"0": {
+		"shortName": "E Route",
+		"longName": "E Route"
+	},
+	"1": {
+		"shortName": "Express 2",
+		"longName": "Express 2"
+	},
+	"2": {
+		"shortName": "I Route",
+		"longName": "I Route"
+	},
+	"3": {
+		"shortName": "J Route",
+		"longName": "J Route"
+	},
+	"4": {
+		"shortName": "TAM 1",
+		"longName": "TAM 1"
+	},
+	"5": {
+		"shortName": "TAM 2",
+		"longName": "TAM 2"
+	},
+	"6": {
+		"shortName": "TAM 3",
+		"longName": "TAM 3"
+	},
+	"7": {
+		"shortName": "TAM 4",
+		"longName": "TAM 4"
+	},
+	"8": {
+		"shortName": "TAM 5",
+		"longName": "TAM 5"
+	},
+	"9": {
+		"shortName": "TLMS 2",
+		"longName": "Tripper Lincoln Middle School 2"
+	},
+	"10": {
+		"shortName": "TLMS 3",
+		"longName": "Tripper Lincoln Middle School 3"
+	},
+	"11": {
+		"shortName": "TLMS 4",
+		"longName": "Tripper Lincoln Middle School 4"
+	},
+	"12": {
+		"shortName": "TLMS 5",
+		"longName": "Tripper Lincoln Middle School 5"
+	},
+	"13": {
+		"shortName": "TLMS Late",
+		"longName": "Tripper Lincoln Middle School Late"
+	},
+	"14": {
+		"shortName": "TPHS 1",
+		"longName": "Tripper Pullman High School 1"
+	},
+	"15": {
+		"shortName": "TPHS 2",
+		"longName": "Tripper Pullman High School 2"
+	}
+}

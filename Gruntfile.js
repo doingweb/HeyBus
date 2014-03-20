@@ -276,7 +276,7 @@ module.exports = function (grunt) {
 						'bower_components/**/*',
 						'images/{,*/}*.{gif,webp}',
 						'styles/fonts/*',
-						'bus-routes/*'
+						'bus-routes/**'
 					]
 				}, {
 					expand: true,

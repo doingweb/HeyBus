@@ -1,102 +1,102 @@
 {
 	"0": {
-		"shortName": "A Outbound",
-		"longName": "A Outbound"
+		"shortName": "A Route",
+		"longName": "A Route"
 	},
 	"1": {
-		"shortName": "E Outbound",
-		"longName": "E Outbound"
+		"shortName": "E Route",
+		"longName": "E Route"
 	},
 	"2": {
-		"shortName": "Express 1 Outbound",
-		"longName": "Express 1 Outbound"
+		"shortName": "Express 1",
+		"longName": "Express 1"
 	},
 	"3": {
-		"shortName": "Express 2 Outbound",
-		"longName": "Express 2 Outbound"
+		"shortName": "Express 2",
+		"longName": "Express 2"
 	},
 	"4": {
-		"shortName": "Express 2 Alt Outbound",
-		"longName": "Express 2 Alt Outbound"
+		"shortName": "Express 2 Alt",
+		"longName": "Express 2 Alternate"
 	},
 	"5": {
-		"shortName": "I Outbound",
-		"longName": "I Outbound"
+		"shortName": "I Route",
+		"longName": "I Route"
 	},
 	"6": {
-		"shortName": "J Outbound",
-		"longName": "J Outbound"
+		"shortName": "J Route",
+		"longName": "J Route"
 	},
 	"7": {
-		"shortName": "Last North Outbound",
-		"longName": "Last North Outbound"
+		"shortName": "Last North",
+		"longName": "Last North"
 	},
 	"8": {
-		"shortName": "Last South Outbound",
-		"longName": "Last South Outbound"
+		"shortName": "Last South",
+		"longName": "Last South"
 	},
 	"9": {
-		"shortName": "Loop Route Outbound",
-		"longName": "Loop Route Outbound"
+		"shortName": "Loop Route",
+		"longName": "Loop Route"
 	},
 	"10": {
-		"shortName": "North Outbound",
-		"longName": "North Outbound"
+		"shortName": "North",
+		"longName": "North"
 	},
 	"11": {
-		"shortName": "Shuttles Outbound",
-		"longName": "Shuttles Outbound"
+		"shortName": "Shuttles",
+		"longName": "Shuttles"
 	},
 	"12": {
-		"shortName": "South Outbound",
-		"longName": "South Outbound"
+		"shortName": "South",
+		"longName": "South"
 	},
 	"13": {
-		"shortName": "TAM1 Outbound",
-		"longName": "TAM 1 Outbound"
+		"shortName": "TAM 1",
+		"longName": "TAM 1"
 	},
 	"14": {
-		"shortName": "TAM2 Outbound",
-		"longName": "TAM 2 Outbound"
+		"shortName": "TAM 2",
+		"longName": "TAM 2"
 	},
 	"15": {
-		"shortName": "TAM3 Outbound",
-		"longName": "TAM 3 Outbound"
+		"shortName": "TAM 3",
+		"longName": "TAM 3"
 	},
 	"16": {
-		"shortName": "TAM4 Outbound",
-		"longName": "TAM 4 Outbound"
+		"shortName": "TAM 4",
+		"longName": "TAM 4"
 	},
 	"17": {
-		"shortName": "TAM5 Outbound",
-		"longName": "TAM 5 Outbound"
+		"shortName": "TAM 5",
+		"longName": "TAM 5"
 	},
 	"18": {
-		"shortName": "TLMS2 Outbound",
-		"longName": "Tripper Lincoln Middle School 2 Outbound"
+		"shortName": "TLMS2",
+		"longName": "Tripper Lincoln Middle School 2"
 	},
 	"19": {
-		"shortName": "TLMS3 Outbound",
-		"longName": "Tripper Lincoln Middle School 3 Outbound"
+		"shortName": "TLMS3",
+		"longName": "Tripper Lincoln Middle School 3"
 	},
 	"20": {
-		"shortName": "TLMS4 Outbound",
-		"longName": "Tripper Lincoln Middle School 4 Outbound"
+		"shortName": "TLMS4",
+		"longName": "Tripper Lincoln Middle School 4"
 	},
 	"21": {
-		"shortName": "TLMS5 Outbound",
-		"longName": "Tripper Lincoln Middle School 5 Outbound"
+		"shortName": "TLMS5",
+		"longName": "Tripper Lincoln Middle School 5"
 	},
 	"22": {
-		"shortName": "TLMSL Outbound",
-		"longName": "Tripper Lincoln Middle School Late Outbound"
+		"shortName": "TLMSL",
+		"longName": "Tripper Lincoln Middle School Late"
 	},
 	"23": {
-		"shortName": "TPHS1 Outbound",
-		"longName": "Tripper Pullman High School 1 Outbound"
+		"shortName": "TPHS1",
+		"longName": "Tripper Pullman High School 1"
 	},
 	"24": {
-		"shortName": "TPHS2 Outbound",
-		"longName": "Tripper Pullman High School 2 Outbound"
+		"shortName": "TPHS2",
+		"longName": "Tripper Pullman High School 2"
 	}
 }

@@ -18,6 +18,33 @@ angular.module('HeyBusApp')
 						return baseURL + 'RouteArrivals.axd?StopID=' + param;
 				}
 			},
+			vacation = (function () {
+				var
+					dates = {
+						2014: {
+							'spring-break': {
+								from: new Date(2014, 2, 15),
+								through: new Date(2014, 2, 22)
+							}
+						}
+					};
+				function isHappening (date) {
+					var yearVacations = dates[date.getFullYear()];
+					for (var name in yearVacations) {
+						if (yearVacations.hasOwnProperty(name)) {
+							var vacation = yearVacations[name];
+							if (vacation.from <= date && date <= vacation.through) {
+								return true;
+							}
+						}
+					}
+					return false;
+				}
+				return {
+					dates: dates,
+					isHappening: isHappening
+				};
+			})(),
 			apiQueue = (function () {
 				var
 					queue = new Array(),
@@ -84,11 +111,13 @@ angular.module('HeyBusApp')
 			getRoutes = function () {
 				var deferred = $q.defer();
 
-				var dayOfTheWeek = new Date().getDay();
+				var today = new Date();
+				var dayOfTheWeek = today.getDay();
 				if (dayOfTheWeek === 0) {
-					deferred.resolve(null);
+					deferred.resolve(null); // No service on Sundays.
 				} else {
-					var routesUrl = 'bus-routes/' + (dayOfTheWeek === 6 ? 'saturday.json' : 'weekday.json');
+					var routesBaseUrl = 'bus-routes/' + (vacation.isHappening(today) ? 'vacation/' : '');
+					var routesUrl = routesBaseUrl + (dayOfTheWeek === 6 ? 'saturday.json' : 'weekday.json');
 					$http.get(routesUrl).success(function (data) {
 						deferred.resolve(data);
 					});

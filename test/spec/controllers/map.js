@@ -25,18 +25,12 @@ describe('Controller: MapCtrl', function () {
 		});
 	}));
 
-	it('should set the map center', function () {
-		expect(scope.map.center.latitude).to.exist;
-		expect(scope.map.center.longitude).to.exist;
-	});
-
-	it('should set the zoom level to 13', function () {
+	it('should default the zoom level to 13', function () {
 		expect(scope.map.zoom).to.equal(13);
 	});
 
 	it('should set the map center to the user\'s current location', function (done) {
-		expect(geolocation.getLocation.called).to.be.true;
-		geolocation.getLocationPromise().then(function (location) {
+		geolocation.promises.getLocation().then(function (location) {
 			expect(scope.map.center.latitude).to.equal(location.coords.latitude);
 			expect(scope.map.center.longitude).to.equal(location.coords.longitude);
 			done();
@@ -45,7 +39,6 @@ describe('Controller: MapCtrl', function () {
 	});
 
 	it('should set up the route options', function (done) {
-		expect(transitData.getRoutes.called).to.be.true;
 		transitData.promises.getRoutes.then(function (routes) {
 			expect(scope.routeOptions).to.equal(routes);
 			done();

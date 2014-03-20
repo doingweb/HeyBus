@@ -17,6 +17,8 @@ angular.module('geolocation', [])
 
 		return {
 			getLocation: getLocation,
-			getLocationPromise: function () { return getLocationPromise; }
+			promises: {
+				getLocation: function () { return getLocationPromise; }
+			}
 		};
 	});

@@ -144,47 +144,46 @@ angular.module('HeyBusApp')
 			}
 		};
 
-		$window.SmiTransitShape = function (busId, names, color, moreNames, routeId, customerCode, unknown2, stops, routePoints) {
+		$window.SmiTransitShape = function (busGroup, names, color, moreNames, routeId, customerCode, unknown2, stops, routePoints) {
 			this.id = routeId;
-			this.busId = busId;
+			this.busGroup = busGroup;
 			this.allNames = names.split('ÿ');
 			this.name = this.allNames[0];
 			this.stops = stops;
-			this.routePoints = routePoints;
+			this.path = routePoints;
+			this.color = color;
 		};
 
-		$window.SmiTransitWaypoint = function (stopId, name, lat, long, unknown1, unknown2, busId, customerCode) {
+		$window.SmiTransitWaypoint = function (stopId, name, lat, long, unknown1, unknown2, busGroup, customerCode) {
 			this.id = stopId;
 			this.name = name;
-			this.lat = lat;
-			this.long = long;
-			this.busId = busId;
+			this.latitude = lat;
+			this.longitude = long;
+			this.busGroup = busGroup;
 		};
 
-		$window.SmiTransitShapePoint = function (busId, name, lat, long, routeId) {
-			this.lat = lat;
-			this.long = long;
+		$window.SmiTransitShapePoint = function (busGroup, name, lat, long, routeId) {
+			this.latitude = lat;
+			this.longitude = long;
 		};
 
 		$window.PlotBusLocations = function (busLocations) {
-			var returnedParams = busLocations.map(function (element) {
-				return element.busId;
-			});
-
 			try {
-				apiQueue.resolve(busLocationApiCall, returnedParams[0], busLocations);
+				apiQueue.resolve(busLocationApiCall, busLocations[0].busGroup, busLocations);
 			} catch (ex) {
 				console.warn('Caught an unresolvable bus location response.');
 			}
 		};
 
-		$window.SmiTransitVehicleLocation = function (physicalBusId, lat, long, busId, heading, busImageUrl, routeName, routeId, timestampHtml) {
-			this.id = physicalBusId;
-			this.busId = busId;
-			this.lat = lat;
-			this.long = long;
-			this.heading = heading;
+		$window.SmiTransitVehicleLocation = function (busId, lat, long, busGroup, heading, busImageUrl, routeName, routeId, timestampHtml) {
+			this.id = busId;
+			this.group = busGroup;
 			this.name = routeName;
+			this.location = {
+				latitude: lat,
+				longitude: long,
+				heading: heading
+			};
 			var timestampParts = timestampHtml.match(/(\d{1,2}):(\d{2}):(\d{2}) (AM|PM)/);
 			if (timestampParts) {
 				var time = new Date();
@@ -192,7 +191,7 @@ angular.module('HeyBusApp')
 				time.setHours(timestampParts[4] == 'PM' ? parseInt(hour, 10) + 12 : hour);
 				time.setMinutes(timestampParts[2]);
 				time.setSeconds(timestampParts[3]);
-				this.timestamp = time;
+				this.location.timestamp = time;
 			} else {
 				console.error('Unable to parse timestamp: ' + timestampHtml);
 			}

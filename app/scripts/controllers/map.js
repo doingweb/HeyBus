@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MapCtrl', function ($scope, $interval, $q, geolocation, transitData) {
+	.controller('MapCtrl', function ($scope, $interval, $q, geolocation, isActiveFilter, transitData) {
 		$scope.map = {
 			center: {
 				latitude: 0,
@@ -12,16 +12,59 @@ angular.module('HeyBusApp')
 
 		geolocation.getLocation().then(setMapCenterToLocation);
 
-		transitData.getRoutes().then(function (routes) {
-			$scope.routeOptions = routes;
+		$scope.routes = [];
+		transitData.getRoutes().then(function (routeNames) {
+			$scope.routes = routeNames;
+			$scope.routes.forEach(function (route, index) {
+				route.active = false;
+				$scope.$watch('routes[' + index + '].active', function () {
+					fetchRouteDetails(route);
+				});
+			});
+
+		//
+		// 	whenRouteStopsChange(updateActiveRouteStops);
+		// 	whenActiveRoutesChange(updateActiveRouteStops);
 		});
 
-		$scope.routesToDisplay = {}; // TODO: This might be a good thing to save to localStorage.
-		var routes = {};
+		// TODO: Bus locations!
 
-		$scope.$watchCollection('routesToDisplay', updateRouteVisibility);
+		$scope.activeRouteStops = [];
 
-		$interval(updateSelectedRouteBusLocations, 5000);
+		function updateActiveRouteStops () {
+			var allStops = [];
+			var stopsHash = {};
+			$scope.activeRouteStops = [];
+
+			var activeRoutes = isActiveFilter($scope.routes);
+			activeRoutes.forEach(function (route) {
+				allStops = allStops.concat(route.stops);
+			});
+
+			for (var i = 0; i < allStops.length; i++) {
+				var stop = allStops[i];
+				stopsHash[stop.id] = stop;
+			}
+
+			for (var stopId in stopsHash) {
+				$scope.activeRouteStops.push(stopsHash[stopId]);
+			}
+		}
+
+		function fetchRouteDetails (route) {
+			transitData.getRouteDetails(route.id).then(function (routeDetails) {
+				route.busGroup = routeDetails.busGroup;
+				route.color = routeDetails.color;
+				route.path = routeDetails.path;
+				route.stops = routeDetails.stops;
+			});
+		}
+
+		function whenRouteStopsChange (listener) {
+			for (var i = 0; i < $scope.routes.length; i++) {
+				$scope.$watchCollection('routes[' + i + '].stops', listener);
+			}
+		}
 
 		function setMapCenterToLocation (location) {
 			$scope.map.center = {
@@ -30,85 +73,20 @@ angular.module('HeyBusApp')
 			};
 		}
 
-		function updateRouteVisibility (routesToDisplay) {
-			angular.forEach(routesToDisplay, function (routeIsSelected, routeId) {
-				var route = routes[routeId];
-				if (route) {
-					if (routeIsSelected) {
-						route.showMarkers();
-					} else {
-						route.hideMarkers();
-					}
-				}
-			});
-		}
+		// function updateSelectedRouteBusLocations () {
+		// 	angular.forEach($scope.routesToDisplay, function (routeIsSelected, routeId) {
+		// 		if (routeIsSelected) {
+		// 			var route = routes[routeId];
+		// 			if (route) {
+		// 				updateRouteBusLocations(route);
+		// 			} else {
+		// 				transitData.getRouteDetails(routeId).then(addRoute).then(updateRouteBusLocations);
+		// 			}
+		// 		}
+		// 	});
 
-		function updateSelectedRouteBusLocations () {
-			angular.forEach($scope.routesToDisplay, function (routeIsSelected, routeId) {
-				if (routeIsSelected) {
-					var route = routes[routeId];
-					if (route) {
-						updateRouteBusLocations(route);
-					} else {
-						transitData.getRouteDetails(routeId).then(addRoute).then(updateRouteBusLocations);
-					}
-				}
-			});
-
-			function addRoute (routeDetails) {
-				var route = new Route(routeDetails);
-				routes[routeDetails.id] = route;
-				return route;
-			}
-
-			function updateRouteBusLocations (route) {
-				transitData.getBusLocations(route.details.busId).then(route.updateBusLocations);
-			}
-		}
-
-		function Route (routeDetails) {
-			var self = this;
-			self.details = routeDetails;
-			self.markers = {
-				buses: {},
-				stops: {},
-				path: {}
-			};
-			self.updateBusLocations = function (busLocations) {
-				self.lastBusLocations = busLocations;
-				busLocations.forEach(updateBusMarkers);
-			};
-			self.showMarkers = showMarkers;
-			self.hideMarkers = hideMarkers;
-
-			function updateBusMarkers (busLocation) {
-				// console.log(busLocation.name + ' route bus \'' + busLocation.id + '\' was at ' + busLocation.lat + ', ' + busLocation.long + ' at ' + busLocation.timestamp);
-				var gmapLatLng = new google.maps.LatLng(busLocation.lat, busLocation.long);
-				if (self.markers.buses[busLocation.id]) {
-					self.markers.buses[busLocation.id].setPosition(gmapLatLng);
-				} else {
-					self.markers.buses[busLocation.id] = new google.maps.Marker({
-						position: gmapLatLng,
-						map: $scope.gmap,
-						title: self.details.name + ' (' + busLocation.id + ')'
-					});
-				}
-			}
-
-			function showMarkers () {
-				setVisibleForAllMarkers(true);
-			}
-
-			function hideMarkers () {
-				setVisibleForAllMarkers(false);
-			}
-
-			function setVisibleForAllMarkers (visible) {
-				angular.forEach(self.markers, function (markerGroup) {
-					angular.forEach(markerGroup, function (marker) {
-						marker.setVisible(visible);
-					});
-				});
-			}
-		}
+		// 	function updateRouteBusLocations (route) {
+		// 		transitData.getBusLocations(route.details.busId).then(route.updateBusLocations);
+		// 	}
+		// }
 	});

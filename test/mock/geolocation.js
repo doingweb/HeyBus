@@ -2,23 +2,21 @@
 
 angular.module('geolocation', [])
 	.factory('geolocation', function ($q) {
-		var getLocationPromise;
-
-		function getLocation () {
-			getLocationPromise = $q.when({
+		var fixture = {
+			location: {
 				coords: {
 					latitude: 11,
 					longitude: 12
 				}
-			});
+			}
+		};
 
-			return getLocationPromise;
+		function getLocation () {
+			return $q.when(fixture.location);
 		}
 
 		return {
-			getLocation: getLocation,
-			promises: {
-				getLocation: function () { return getLocationPromise; }
-			}
+			fixture: fixture,
+			getLocation: getLocation
 		};
 	});

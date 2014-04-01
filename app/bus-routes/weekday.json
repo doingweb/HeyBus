@@ -1,102 +1,127 @@
-{
-	"0": {
+[
+	{
+		"id": "0",
 		"shortName": "A Route",
 		"longName": "A Route"
 	},
-	"1": {
+	{
+		"id": "1",
 		"shortName": "E Route",
 		"longName": "E Route"
 	},
-	"2": {
+	{
+		"id": "2",
 		"shortName": "Express 1",
 		"longName": "Express 1"
 	},
-	"3": {
+	{
+		"id": "3",
 		"shortName": "Express 2",
 		"longName": "Express 2"
 	},
-	"4": {
+	{
+		"id": "4",
 		"shortName": "Express 2 Alt",
 		"longName": "Express 2 Alternate"
 	},
-	"5": {
+	{
+		"id": "5",
 		"shortName": "I Route",
 		"longName": "I Route"
 	},
-	"6": {
+	{
+		"id": "6",
 		"shortName": "J Route",
 		"longName": "J Route"
 	},
-	"7": {
+	{
+		"id": "7",
 		"shortName": "Last North",
 		"longName": "Last North"
 	},
-	"8": {
+	{
+		"id": "8",
 		"shortName": "Last South",
 		"longName": "Last South"
 	},
-	"9": {
+	{
+		"id": "9",
 		"shortName": "Loop Route",
 		"longName": "Loop Route"
 	},
-	"10": {
+	{
+		"id": "10",
 		"shortName": "North",
 		"longName": "North"
 	},
-	"11": {
+	{
+		"id": "11",
 		"shortName": "Shuttles",
 		"longName": "Shuttles"
 	},
-	"12": {
+	{
+		"id": "12",
 		"shortName": "South",
 		"longName": "South"
 	},
-	"13": {
+	{
+		"id": "13",
 		"shortName": "TAM 1",
 		"longName": "TAM 1"
 	},
-	"14": {
+	{
+		"id": "14",
 		"shortName": "TAM 2",
 		"longName": "TAM 2"
 	},
-	"15": {
+	{
+		"id": "15",
 		"shortName": "TAM 3",
 		"longName": "TAM 3"
 	},
-	"16": {
+	{
+		"id": "16",
 		"shortName": "TAM 4",
 		"longName": "TAM 4"
 	},
-	"17": {
+	{
+		"id": "17",
 		"shortName": "TAM 5",
 		"longName": "TAM 5"
 	},
-	"18": {
+	{
+		"id": "18",
 		"shortName": "TLMS2",
 		"longName": "Tripper Lincoln Middle School 2"
 	},
-	"19": {
+	{
+		"id": "19",
 		"shortName": "TLMS3",
 		"longName": "Tripper Lincoln Middle School 3"
 	},
-	"20": {
+	{
+		"id": "20",
 		"shortName": "TLMS4",
 		"longName": "Tripper Lincoln Middle School 4"
 	},
-	"21": {
+	{
+		"id": "21",
 		"shortName": "TLMS5",
 		"longName": "Tripper Lincoln Middle School 5"
 	},
-	"22": {
+	{
+		"id": "22",
 		"shortName": "TLMSL",
 		"longName": "Tripper Lincoln Middle School Late"
 	},
-	"23": {
+	{
+		"id": "23",
 		"shortName": "TPHS1",
 		"longName": "Tripper Pullman High School 1"
 	},
-	"24": {
+	{
+		"id": "24",
 		"shortName": "TPHS2",
 		"longName": "Tripper Pullman High School 2"
 	}
-}
+]

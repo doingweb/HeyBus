@@ -13,32 +13,60 @@ angular.module('HeyBusApp')
 		geolocation.getLocation().then(setMapCenterToLocation);
 
 		$scope.routes = [];
+		$scope.retryTimeout = 5000;
 		transitData.getRoutes().then(function (routeNames) {
 			$scope.routes = routeNames;
 			$scope.routes.forEach(function (route, index) {
 				route.active = false;
-				$scope.$watch('routes[' + index + '].active', function () {
-					fetchRouteDetails(route);
-				});
+				fetchDetailsWhenRouteBecomesActive(route, index);
+				$scope.$watch('routes[' + index + '].active', updateActiveRouteStops);
+				$scope.$watchCollection('routes[' + index + '].stops', updateActiveRouteStops);
 			});
-
-		//
-		// 	whenRouteStopsChange(updateActiveRouteStops);
-		// 	whenActiveRoutesChange(updateActiveRouteStops);
 		});
 
-		// TODO: Bus locations!
+		function fetchDetailsWhenRouteBecomesActive (route, index) {
+			var unwatchForFetchingDetails = $scope.$watch('routes[' + index + '].active', function (newValue) {
+				if (newValue) {
+					fetchRouteDetails(route)
+						.catch(continuouslyRetryFetchingRouteDetails);
+					unwatchForFetchingDetails();
+				}
+			});
+
+			function continuouslyRetryFetchingRouteDetails () {
+				var retry = $interval(retryFetch, $scope.retryTimeout);
+
+				function retryFetch () {
+					fetchRouteDetails(route).then(cancelRetrying);
+				}
+
+				function cancelRetrying () {
+					$interval.cancel(retry);
+				}
+			}
+		}
+
+		function fetchRouteDetails (route) {
+			return transitData.getRouteDetails(route.id).then(function (routeDetails) {
+				route.busGroup = routeDetails.busGroup;
+				route.color = routeDetails.color;
+				route.path = routeDetails.path;
+				route.stops = routeDetails.stops;
+			});
+		}
 
 		$scope.activeRouteStops = [];
 
 		function updateActiveRouteStops () {
-			var allStops = [];
-			var stopsHash = {};
+			var
+				allStops = [],
+				stopsHash = {};
 			$scope.activeRouteStops = [];
 
 			var activeRoutes = isActiveFilter($scope.routes);
 			activeRoutes.forEach(function (route) {
-				allStops = allStops.concat(route.stops);
+				if (route.stops)
+					allStops = allStops.concat(route.stops);
 			});
 
 			for (var i = 0; i < allStops.length; i++) {
@@ -48,21 +76,6 @@ angular.module('HeyBusApp')
 
 			for (var stopId in stopsHash) {
 				$scope.activeRouteStops.push(stopsHash[stopId]);
-			}
-		}
-
-		function fetchRouteDetails (route) {
-			transitData.getRouteDetails(route.id).then(function (routeDetails) {
-				route.busGroup = routeDetails.busGroup;
-				route.color = routeDetails.color;
-				route.path = routeDetails.path;
-				route.stops = routeDetails.stops;
-			});
-		}
-
-		function whenRouteStopsChange (listener) {
-			for (var i = 0; i < $scope.routes.length; i++) {
-				$scope.$watchCollection('routes[' + i + '].stops', listener);
 			}
 		}
 

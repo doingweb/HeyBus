@@ -14,36 +14,30 @@ angular.module('HeyBusApp')
 
 		$scope.routes = [];
 		$scope.retryTimeout = 5000;
+		$scope.busLocationRefreshRate = 5000;
 		transitData.getRoutes().then(function (routeNames) {
 			$scope.routes = routeNames;
 			$scope.routes.forEach(function (route, index) {
 				route.active = false;
-				fetchDetailsWhenRouteBecomesActive(route, index);
+
+				waitForRouteToBeActivated(route)
+					.then(fetchRouteDetails)
+					.then(periodicallyUpdateBusLocationsWhenRouteActivated);
+
 				$scope.$watch('routes[' + index + '].active', updateActiveRouteStops);
 				$scope.$watchCollection('routes[' + index + '].stops', updateActiveRouteStops);
 			});
 		});
 
-		function fetchDetailsWhenRouteBecomesActive (route, index) {
-			var unwatchForFetchingDetails = $scope.$watch('routes[' + index + '].active', function (newValue) {
-				if (newValue) {
-					fetchRouteDetails(route)
-						.catch(continuouslyRetryFetchingRouteDetails);
-					unwatchForFetchingDetails();
+		function waitForRouteToBeActivated (route) {
+			var deferred = $q.defer();
+			var unwatch = $scope.$watch('routes[' + $scope.routes.indexOf(route) + '].active', function (active) {
+				if (active === true) {
+					deferred.resolve(route);
+					unwatch();
 				}
 			});
-
-			function continuouslyRetryFetchingRouteDetails () {
-				var retry = $interval(retryFetch, $scope.retryTimeout);
-
-				function retryFetch () {
-					fetchRouteDetails(route).then(cancelRetrying);
-				}
-
-				function cancelRetrying () {
-					$interval.cancel(retry);
-				}
-			}
+			return deferred.promise;
 		}
 
 		function fetchRouteDetails (route) {
@@ -52,6 +46,32 @@ angular.module('HeyBusApp')
 				route.color = routeDetails.color;
 				route.path = routeDetails.path;
 				route.stops = routeDetails.stops;
+				return route;
+			});
+		}
+
+		function periodicallyUpdateBusLocationsWhenRouteActivated (route) {
+			var updatingBusLocations;
+			$scope.$watch('routes[' + $scope.routes.indexOf(route) + '].active', function (active) {
+				if (active === true) {
+					updatingBusLocations = periodicallyRetrieveBusLocations(route);
+				} else if (active === false) {
+					if (updatingBusLocations)
+						$interval.cancel(updatingBusLocations);
+				}
+			});
+		}
+
+		function periodicallyRetrieveBusLocations (route) {
+			fetchBusLocations(route);
+			return $interval(function () {
+				fetchBusLocations(route);
+			}, $scope.busLocationRefreshRate);
+		}
+
+		function fetchBusLocations (route) {
+			return transitData.getBusLocations(route.busGroup).then(function (busLocations) {
+				route.buses = busLocations;
 			});
 		}
 
@@ -74,9 +94,8 @@ angular.module('HeyBusApp')
 				stopsHash[stop.id] = stop;
 			}
 
-			for (var stopId in stopsHash) {
+			for (var stopId in stopsHash)
 				$scope.activeRouteStops.push(stopsHash[stopId]);
-			}
 		}
 
 		function setMapCenterToLocation (location) {
@@ -85,21 +104,4 @@ angular.module('HeyBusApp')
 				longitude: location.coords.longitude
 			};
 		}
-
-		// function updateSelectedRouteBusLocations () {
-		// 	angular.forEach($scope.routesToDisplay, function (routeIsSelected, routeId) {
-		// 		if (routeIsSelected) {
-		// 			var route = routes[routeId];
-		// 			if (route) {
-		// 				updateRouteBusLocations(route);
-		// 			} else {
-		// 				transitData.getRouteDetails(routeId).then(addRoute).then(updateRouteBusLocations);
-		// 			}
-		// 		}
-		// 	});
-
-		// 	function updateRouteBusLocations (route) {
-		// 		transitData.getBusLocations(route.details.busId).then(route.updateBusLocations);
-		// 	}
-		// }
 	});

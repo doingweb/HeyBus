@@ -49,84 +49,119 @@ describe('Controller: MapCtrl', function () {
 		});
 	});
 
-	it('should fetch the details of a route when it becomes active', function () {
-		scope.$apply();
-
-		for (var i = 0; i < scope.routes.length; i++) {
-			var route = scope.routes[i];
-			var details = transitData.fixture.routeDetails[route.id];
-			route.active = true;
+	describe('Route Details', function () {
+		beforeEach(function () {
 			scope.$apply();
+		});
 
-			expect(route.busGroup).to.equal(details.busGroup);
-			expect(route.color).to.equal(details.color);
-			expect(route.path).to.eql(details.path);
-			expect(route.stops).to.eql(details.stops);
-		};
-	});
+		it('should fetch the details of a route when it becomes active', function () {
+			for (var i = 0; i < scope.routes.length; i++) {
+				var route = scope.routes[i];
+				var details = transitData.fixture.routeDetails[route.id];
+				route.active = true;
+				scope.$apply();
 
-	it('should only fetch details once for each route if successful', function () {
-		var routeDetailSpy = sinon.spy(transitData, 'getRouteDetails');
-		scope.$apply();
-
-		for (var i = 0; i < scope.routes.length; i++)
-			scope.routes[i].active = true;
-		scope.$apply();
-
-		for (var i = 0; i < scope.routes.length; i++)
-			scope.routes[i].active = false;
-		scope.$apply();
-
-		for (var i = 0; i < scope.routes.length; i++)
-			scope.routes[i].active = true;
-		scope.$apply();
-
-		for (var i = 0; i < scope.routes.length; i++)
-			assert(routeDetailSpy.withArgs(scope.routes[i].id).calledOnce);
-	});
-
-	it('should retry fetching details if it fails', function () {
-		sinon.stub(transitData, 'getRouteDetails').returns(q.reject());
-		scope.$apply();
-
-		var route = scope.routes[0];
-		route.active = true;
-		scope.$apply();
-
-		assert(transitData.getRouteDetails.calledOnce, 'first attempt fails');
-		transitData.getRouteDetails.restore();
-		sinon.spy(transitData, 'getRouteDetails');
-		interval.flush(scope.retryTimeout);
-
-		assert(transitData.getRouteDetails.calledOnce, 'retries fetching details');
-		interval.flush(scope.retryTimeout);
-
-		assert(transitData.getRouteDetails.calledOnce, 'first retry succeeded; no need to re-retry');
-	});
-
-	it('should include all of a route\'s stops in the active stops list when the route is activated', function () {
-		scope.$apply();
-
-		for (var i = 0; i < scope.routes.length; i++) {
-			var route = scope.routes[i];
-			route.active = true;
-			scope.$apply();
-
-			var activeStopsHash = getHashOfStops(scope.activeRouteStops);
-			route.stops.forEach(function (stop) {
-				expect(activeStopsHash).to.contain.key(stop.id.toString());
-			});
-		}
-
-		function getHashOfStops (stopsArray) {
-			var hash = {};
-			for (var i = 0; i < stopsArray.length; i++) {
-				var stop = stopsArray[i];
-				hash[stop.id] = stop;
+				expect(route.busGroup).to.equal(details.busGroup);
+				expect(route.color).to.equal(details.color);
+				expect(route.path).to.eql(details.path);
+				expect(route.stops).to.eql(details.stops);
 			}
-			return hash;
-		}
+		});
+
+		it('should only fetch details once for each route if successful', function () {
+			var routeDetailSpy = sinon.spy(transitData, 'getRouteDetails');
+			scope.$apply();
+
+			var i;
+			for (i = 0; i < scope.routes.length; i++)
+				scope.routes[i].active = true;
+			scope.$apply();
+
+			for (i = 0; i < scope.routes.length; i++)
+				scope.routes[i].active = false;
+			scope.$apply();
+
+			for (i = 0; i < scope.routes.length; i++)
+				scope.routes[i].active = true;
+			scope.$apply();
+
+			for (i = 0; i < scope.routes.length; i++)
+				assert(routeDetailSpy.withArgs(scope.routes[i].id).calledOnce);
+		});
+
+		it('should include all of a route\'s stops in the active stops list when the route is activated', function () {
+			for (var i = 0; i < scope.routes.length; i++) {
+				var route = scope.routes[i];
+				route.active = true;
+				scope.$apply();
+
+				var activeStopsHash = getHashOfStops(scope.activeRouteStops);
+				route.stops.forEach(function (stop) {
+					expect(activeStopsHash).to.contain.key(stop.id.toString());
+				});
+			}
+
+			function getHashOfStops (stopsArray) {
+				var hash = {};
+				for (var i = 0; i < stopsArray.length; i++) {
+					var stop = stopsArray[i];
+					hash[stop.id] = stop;
+				}
+				return hash;
+			}
+		});
 	});
 
-	// TODO: Bus locations!
+	describe('Bus Locations', function () {
+		beforeEach(function () {
+			sinon.spy(transitData, 'getBusLocations');
+			scope.$apply();
+		});
+		afterEach(function () {
+			transitData.getBusLocations.restore();
+		});
+
+		it('should get bus locations immediately after being activated', function () {
+			for (var i = 0; i < scope.routes.length; i++) {
+				var route = scope.routes[i];
+				transitData.getBusLocations.reset();
+				route.active = true;
+				scope.$apply();
+
+				assert(transitData.getBusLocations.calledOnce);
+				expect(route.buses).to.exist;
+			}
+		});
+
+		it('should get bus locations periodically when activated', function () {
+			for (var i = 0; i < scope.routes.length; i++) {
+				var route = scope.routes[i];
+				transitData.getBusLocations.reset();
+				route.active = true;
+				scope.$apply();
+
+				interval.flush(scope.busLocationRefreshRate);
+				assert(transitData.getBusLocations.calledTwice);
+				interval.flush(scope.busLocationRefreshRate);
+				assert(transitData.getBusLocations.calledThrice);
+
+				route.active = false;
+				scope.$apply();
+			}
+		});
+
+		it('should not get locations after being deactivated', function () {
+			for (var i = 0; i < scope.routes.length; i++) {
+				var route = scope.routes[i];
+				transitData.getBusLocations.reset();
+				route.active = true;
+				scope.$apply();
+				route.active = false;
+				scope.$apply();
+				interval.flush(scope.busLocationRefreshRate);
+
+				assert(transitData.getBusLocations.calledOnce);
+			}
+		});
+	});
 });

@@ -1,10 +1,6 @@
 'use strict';
 
-function onGoogleMapsReady () {
-	angular.bootstrap(document.body, ['HeyBusApp']);
-}
-
-angular.module('HeyBusApp', ['ui.bootstrap', 'ui.map', 'ngRoute', 'ngAnimate', 'geolocation'])
+angular.module('HeyBusApp', ['ui.bootstrap', 'google-maps', 'ngRoute', 'ngAnimate', 'geolocation'])
 	.config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
 		$routeProvider
 			.when('/', {

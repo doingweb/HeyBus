@@ -169,7 +169,7 @@ angular.module('HeyBusApp')
 
 		$window.PlotBusLocations = function (busLocations) {
 			try {
-				apiQueue.resolve(busLocationApiCall, busLocations[0].busGroup, busLocations);
+				apiQueue.resolve(busLocationApiCall, busLocations[0].group, busLocations);
 			} catch (ex) {
 				console.warn('Caught an unresolvable bus location response.');
 			}

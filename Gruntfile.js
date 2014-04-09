@@ -189,7 +189,7 @@ module.exports = function (grunt) {
 					src: [
 						'<%= yeoman.dist %>/scripts/{,*/}*.js',
 						'<%= yeoman.dist %>/styles/{,*/}*.css',
-						'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}',
+						'<%= yeoman.dist %>/images/{,*/}*.{png,jpg,jpeg,gif,webp}',
 						'<%= yeoman.dist %>/styles/fonts/*'
 					]
 				}
@@ -414,10 +414,11 @@ module.exports = function (grunt) {
 				access: 'public-read'
 			},
 			production: {
-				upload: grunt.file.expand({ cwd: 'dist', filter: 'isFile' }, '**').map(function (file) {
+				sync: grunt.file.expand({ cwd: 'dist', filter: 'isFile' }, '**').map(function (file) {
 					return {
 						src: 'dist/' + file,
-						dest: 'heybus/' + file
+						dest: 'heybus/' + file,
+						options: { verify: true }
 					}
 				})
 			}

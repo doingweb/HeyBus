@@ -414,11 +414,10 @@ module.exports = function (grunt) {
 				access: 'public-read'
 			},
 			production: {
-				sync: grunt.file.expand({ cwd: 'dist', filter: 'isFile' }, '**').map(function (file) {
+				upload: grunt.file.expand({ cwd: 'dist', filter: 'isFile' }, '**').map(function (file) {
 					return {
 						src: 'dist/' + file,
-						dest: 'heybus/' + file,
-						options: { verify: true }
+						dest: 'heybus/' + file
 					}
 				})
 			}

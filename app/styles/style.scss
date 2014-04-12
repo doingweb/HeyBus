@@ -13,7 +13,7 @@ html, body, .container, #google-map, .angular-google-map, .angular-google-map-co
 
 body {
 	background: #fafafa;
-	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-family: "Roboto", Arial, sans-serif;
 	color: #333;
 }
 
@@ -26,4 +26,10 @@ body {
 	overflow-y: auto;
 
 	ul { margin-bottom: 0; }
+}
+
+.angular-google-maps-marker-label {
+	font-family: "Droid Sans Mono";
+	font-size: 0.8em;
+	font-weight: normal;
 }

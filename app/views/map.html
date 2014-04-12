@@ -1,7 +1,7 @@
 <section id="google-map">
 	<google-map center="map.center" zoom="map.zoom" draggable="true">
 		<polyline class="route-path" ng-if="route.path" path="route.path" stroke="{color:route.color,opacity:0.5}" ng-repeat-start="route in routes | isActive"></polyline>
-		<marker class="route-bus" coords="bus.location" icon="'images/bus-icon.svg'" ng-repeat="bus in route.buses" ng-if="route.buses" ng-repeat-end>
+		<marker class="route-bus" coords="bus.location" icon="'images/bus-icon.svg'" ng-repeat="(id, bus) in route.buses" ng-if="route.buses" ng-repeat-end>
 			<marker-label content="route.shortName + ' (' + bus.id + ')'" anchor="40 0" class="label label-default"></marker-label>
 		</marker>
 		<markers class="transit-stop" models="activeRouteStops" coords="'self'" options="{icon:'images/stop-icon.svg'}" fit="true"></markers>

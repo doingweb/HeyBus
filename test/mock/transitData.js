@@ -92,14 +92,18 @@ angular.module('HeyBusApp')
 							group: 10,
 							location: {
 								latitude: 46.7316,
-								longitude: -117.1685
+								longitude: -117.1685,
+								heading: 100,
+								timestamp: new Date()
 							}
 						}, {
 							id: 'imaginary bus 2',
 							group: 10,
 							location: {
 								latitude: 46.7326,
-								longitude: -117.1659
+								longitude: -117.1659,
+								heading: 200,
+								timestamp: new Date()
 							}
 						}
 					],

@@ -19,6 +19,7 @@ angular.module('HeyBusApp')
 			$scope.routes = routeNames;
 			$scope.routes.forEach(function (route, index) {
 				route.active = false;
+				route.buses = {};
 
 				waitForRouteToBeActivated(route)
 					.then(fetchRouteDetails)
@@ -71,7 +72,17 @@ angular.module('HeyBusApp')
 
 		function fetchBusLocations (route) {
 			return transitData.getBusLocations(route.busGroup).then(function (busLocations) {
-				route.buses = busLocations;
+				busLocations.forEach(function (newBus) {
+					var existingBus = route.buses[newBus.id];
+					if (existingBus) {
+						existingBus.location.latitude = newBus.location.latitude;
+						existingBus.location.longitude = newBus.location.longitude;
+						existingBus.location.heading = newBus.location.heading;
+						existingBus.location.timestamp = newBus.location.timestamp;
+					} else {
+						route.buses[newBus.id] = newBus;
+					}
+				});
 			});
 		}
 

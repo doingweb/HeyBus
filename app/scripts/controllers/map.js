@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('HeyBusApp')
-	.controller('MapCtrl', function ($scope, $interval, $q, geolocation, isActiveFilter, transitData) {
+	.controller('MapCtrl', function ($scope, $interval, $q, geolocation, $analytics, isActiveFilter, transitData) {
 		$scope.map = {
 			center: {
 				latitude: 0,
@@ -22,6 +22,7 @@ angular.module('HeyBusApp')
 				route.buses = {};
 
 				waitForRouteToBeActivated(route)
+					.then(reportRouteActivation)
 					.then(fetchRouteDetails)
 					.then(periodicallyUpdateBusLocationsWhenRouteActivated);
 
@@ -39,6 +40,11 @@ angular.module('HeyBusApp')
 				}
 			});
 			return deferred.promise;
+		}
+
+		function reportRouteActivation (route) {
+			$analytics.eventTrack('Activation', { category: 'Routes', label: route.longName });
+			return route;
 		}
 
 		function fetchRouteDetails (route) {

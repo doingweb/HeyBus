@@ -1,82 +1,77 @@
 [
 	{
 		"id": "0",
-		"shortName": "E Route",
-		"longName": "E Route"
+		"shortName": "SU E Outbound",
+		"longName": "SU E Outbound"
 	},
 	{
 		"id": "1",
-		"shortName": "Express 2",
-		"longName": "Express 2"
+		"shortName": "SU I Outbound",
+		"longName": "SU I Outbound"
 	},
 	{
 		"id": "2",
-		"shortName": "I Route",
-		"longName": "I Route"
+		"shortName": "SU South Outbound",
+		"longName": "SU South Outbound"
 	},
 	{
 		"id": "3",
-		"shortName": "J Route",
-		"longName": "J Route"
+		"shortName": "SU Tam 1 Outbound",
+		"longName": "SU Tam 1 Outbound"
 	},
 	{
 		"id": "4",
-		"shortName": "TAM 1",
-		"longName": "TAM 1"
+		"shortName": "SU Tam 2 Outbound",
+		"longName": "SU Tam 2 Outbound"
 	},
 	{
 		"id": "5",
-		"shortName": "TAM 2",
-		"longName": "TAM 2"
+		"shortName": "SU Tam 3 Outbound",
+		"longName": "SU Tam 3 Outbound"
 	},
 	{
 		"id": "6",
-		"shortName": "TAM 3",
-		"longName": "TAM 3"
+		"shortName": "SU Tam 4 Outbound",
+		"longName": "SU Tam 4 Outbound"
 	},
 	{
 		"id": "7",
-		"shortName": "TAM 4",
-		"longName": "TAM 4"
+		"shortName": "SU Tam 5 Outbound",
+		"longName": "SU Tam 5 Outbound"
 	},
 	{
 		"id": "8",
-		"shortName": "TAM 5",
-		"longName": "TAM 5"
+		"shortName": "SU TLMS 2 Outbound",
+		"longName": "SU TLMS 2 Outbound"
 	},
 	{
 		"id": "9",
-		"shortName": "TLMS 2",
-		"longName": "Tripper Lincoln Middle School 2"
+		"shortName": "SU TLMS 3 Outbound",
+		"longName": "SU TLMS 3 Outbound"
 	},
 	{
 		"id": "10",
-		"shortName": "TLMS 3",
-		"longName": "Tripper Lincoln Middle School 3"
+		"shortName": "SU TLMS 4 Outbound",
+		"longName": "SU TLMS 4 Outbound"
 	},
 	{
 		"id": "11",
-		"shortName": "TLMS 4",
-		"longName": "Tripper Lincoln Middle School 4"
+		"shortName": "SU TLMS 5 Outbound",
+		"longName": "SU TLMS 5 Outbound"
 	},
 	{
 		"id": "12",
-		"shortName": "TLMS 5",
-		"longName": "Tripper Lincoln Middle School 5"
+		"shortName": "SU TLMSL Outbound",
+		"longName": "SU TLMSL Outbound"
 	},
 	{
 		"id": "13",
-		"shortName": "TLMS Late",
-		"longName": "Tripper Lincoln Middle School Late"
+		"shortName": "SU TPHS 1 Outbound",
+		"longName": "SU TPHS 1 Outbound"
 	},
 	{
 		"id": "14",
-		"shortName": "TPHS 1",
-		"longName": "Tripper Pullman High School 1"
-	},
-	{
-		"id": "15",
-		"shortName": "TPHS 2",
-		"longName": "Tripper Pullman High School 2"
+		"shortName": "SU TPHS 2 Outbound",
+		"longName": "SU TPHS 2 Outbound"
 	}
 ]

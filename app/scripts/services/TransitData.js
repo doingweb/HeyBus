@@ -25,6 +25,10 @@ angular.module('HeyBusApp')
 							'spring-break': {
 								from: new Date(2014, 2, 15),
 								through: new Date(2014, 2, 22)
+							},
+							'summer': {
+								from: new Date(2014, 4, 12),
+								through: new Date(2014, 7, 30)
 							}
 						}
 					};
@@ -116,6 +120,7 @@ angular.module('HeyBusApp')
 				if (dayOfTheWeek === 0) {
 					deferred.resolve(null); // No service on Sundays.
 				} else {
+					// TODO: Consider having one file for the year's schedule, instead of all this logic.
 					var routesBaseUrl = 'bus-routes/' + (vacation.isHappening(today) ? 'vacation/' : '');
 					var routesUrl = routesBaseUrl + (dayOfTheWeek === 6 ? 'saturday.json' : 'weekday.json');
 					$http.get(routesUrl).success(function (data) {

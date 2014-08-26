@@ -28,7 +28,7 @@ angular.module('HeyBusApp')
 							},
 							'summer': {
 								from: new Date(2014, 4, 12),
-								through: new Date(2014, 7, 30)
+								through: new Date(2014, 7, 24)
 							}
 						}
 					};
